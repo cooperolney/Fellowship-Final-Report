@@ -13,8 +13,6 @@ about:
 ---
 
 <!-- About this blog -->
-This blog contains posts created for the Data Visualization course at St. Lawrence University. Each post uses real-world datasets to explore questions through data analysis and visualization.
-
 This blog contains posts created for the 2026 St. Lawrence Fellowship. The goal of this fellowship was to visualize in-game win probability in college basketball through data storytelling 
 
 
