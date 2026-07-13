@@ -4,42 +4,21 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "This blog contains posts created for the Data Visualization course at St. Lawrence University. Each post uses real-world datasets to explore questions through data analysis and visualization.\nThis blog contains posts created for the 2026 St. Lawrence Fellowship. The goal of this fellowship was to visualize in-game win probability in college basketball through data storytelling"
+    "text": "This blog contains posts created for the 2026 St. Lawrence Fellowship. The goal of this fellowship was to visualize in-game win probability in college basketball through data storytelling"
   },
   {
-    "objectID": "posts/first_blog_post/index.html",
-    "href": "posts/first_blog_post/index.html",
-    "title": "Premier League Playing Style",
+    "objectID": "posts/06_championship/index.html",
+    "href": "posts/06_championship/index.html",
+    "title": "2026 National Championship Closeread",
     "section": "",
-    "text": "The dataset used in this analysis contains English Premier League match data from the 2021-2022 season. The dataset includes 380 observations, corresponding to the 380 matches played over the course of a full season. Each match records performance statistics for both the home and away teams.\nThe variables I am most interested in are shots taken and fouls committed by the home and away teams. These variables provide insight into team playing styles, particularly whether home teams tend to play a more attacking style by generating more shots, and whether away teams are forced into a more defensive approach, potentially committing more fouls. Other metrics to also consider are corner kicks and yellow cards, as teams typically win more corners the more they attack, while yellow cards can indicate defensive play or time wasting tactics.\nThis leads to my primary question of interest:\nDo home teams play a more attacking style of soccer, while away teams adopt a more defensive style of play?\nThis data was accessed through the TidyTuesday project on a GitHub repository. The original source of the data is from Evan Gower on Kaggle.\nSome additional context about the Premier League is important for interpreting this data. The league consists of 20 teams, with each team playing 38 matches, once at home and once away against every other team. Match outcomes are scored as 3 points for a win, 1 point for a draw, and 0 points for a loss. Playing at home is widely believed to provide a competitive advantage due to factors such as crowd support, less traveling, better stadium amenities, and even differences in pitch dimensions.\nAs a result, teams often approach away matches more conservatively. Securing a draw away from home is typically considered a successful outcome, which encourages defensive strategies. In contrast, home matches are seen as opportunities to earn the maximum number of points, leading teams to adopt a more attacking style of play. Away teams may also attempt to slow the pace of the game through fouling or time-wasting, which can be reflected in higher foul counts and yellow cards.\nOverall, these contextual factors motivate an exploration of whether match statistics such as shots taken and fouls committed support the commonly held belief that home teams attack more, while away teams defend more."
+    "text": "Insert Closeread"
   },
   {
-    "objectID": "posts/first_blog_post/index.html#setting-up-the-data",
-    "href": "posts/first_blog_post/index.html#setting-up-the-data",
-    "title": "Premier League Playing Style",
-    "section": "Setting up the Data",
-    "text": "Setting up the Data\n\nlibrary(tidyverse)\n\n\nsoccer &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2023/2023-04-04/soccer21-22.csv')\n\n\nsoccer &lt;- soccer |&gt; mutate(shot_diff = HS - AS,\n                 foul_diff = HF - AF,\n                 corner_diff = HC - AC)"
-  },
-  {
-    "objectID": "posts/first_blog_post/index.html#plot-1-difference-in-shots-home-vs-away",
-    "href": "posts/first_blog_post/index.html#plot-1-difference-in-shots-home-vs-away",
-    "title": "Premier League Playing Style",
-    "section": "Plot 1: Difference in Shots: Home vs Away",
-    "text": "Plot 1: Difference in Shots: Home vs Away\n\nggplot(data = soccer, aes(x = shot_diff)) +\n  geom_histogram(binwidth = 4) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  labs( title = \"Difference in Shots: Home vs Away\", \n        x = \"Home Shots − Away Shots\", \n        y = \"Number of Matches\") +\n  xlim(-29,29) +\n  theme_minimal()\n\n\n\n\n\n\n\n\nThe distribution of the histogram is approximately normal, with its peak occurring when the home teams holds a 2-6 shot advantage. Looking at extreme shot differences, the home team out shooting the away team by 15 or more shots is more common than the other way around. This pattern suggests that home teams are generally more likely to play an attacking style of soccer. However, there is still a presence of negative values showing that matches end with the away team taking more shots. This indicates the home field advantage alone does not fully determine a team’s style of play, and that other factors such as overall team quality likely plays a role."
-  },
-  {
-    "objectID": "posts/first_blog_post/index.html#plot-2-difference-in-fouls-home-vs-away",
-    "href": "posts/first_blog_post/index.html#plot-2-difference-in-fouls-home-vs-away",
-    "title": "Premier League Playing Style",
-    "section": "Plot 2: Difference in Fouls: Home vs Away",
-    "text": "Plot 2: Difference in Fouls: Home vs Away\n\nggplot(data = soccer, aes(x = foul_diff)) +\n  geom_histogram(binwidth = 3) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  labs( title = \"Difference in Fouls: Home vs Away\", \n        x = \"Home Fouls − Away Fouls\", \n        y = \"Number of Matches\") + \n  xlim(-20, 20) +\n  theme_minimal()\n\n\n\n\n\n\n\n\nThe histogram peaks around a shot difference of 0, showing that in most matches there is little to no difference in the number of fouls committed by the home and away teams. However, the distribution is skewed to the left, with several negative outliers where the away team has committed many more fouls. This suggests that in certain matches, away teams are forced into a more defensive style of play, relying heavily on fouling to disrupt the home team’s attacks and slow the pace of the game."
-  },
-  {
-    "objectID": "posts/first_blog_post/index.html#plot-3-shot-difference-by-match-outcome",
-    "href": "posts/first_blog_post/index.html#plot-3-shot-difference-by-match-outcome",
-    "title": "Premier League Playing Style",
-    "section": "Plot 3: Shot Difference by Match Outcome",
-    "text": "Plot 3: Shot Difference by Match Outcome\n\nggplot(data = soccer, aes(x = FTR, y = shot_diff, fill = FTR)) +\n  geom_boxplot() +\n  geom_hline(yintercept = 0, linetype = \"dashed\") + \n  scale_x_discrete(labels = c(\"A\" = \"Away Win\", \"D\" = \"Draw\", \"H\" = \"Home Win\")) +\n  labs( title = \"Shot Difference by Match Outcome\", \n        x = \"Final Match Result\", \n        y = \"Home Shots − Away Shots\") + \n  theme_minimal() + \n  ylim(-29, 29) +\n  theme(legend.position = \"none\") +\n  coord_flip()\n\n\n\n\n\n\n\n\nThe boxplots show a clear relationship between shot difference and the final match result. When the away team wins, the median shot difference is around -2, meaning that away victories typically occur when the away team is able to generate slightly more attacking opportunities than the home team.\nFor drawn matches, the median shot difference is about 2 suggesting that home teams still tend to take more shots even when the match ends level. Which is consistent with the idea that away teams often play more defensively and are satisfied with drawing matches away from home. When the home team wins, the median show difference rises to around 7, showing that home victories are strongly associated with attacking play style where the home team dominates the possession of the ball.\nOverall, this plot supports the narrative that home teams generally play a more attacking style, while the away team adopts more defensive strategies. The plot also shows that the amount of attacking pressure a team can apply is potentially associated with the outcome of the match."
+    "objectID": "posts/05_closeread_test/index.html",
+    "href": "posts/05_closeread_test/index.html",
+    "title": "Learning the Closeread Extension",
+    "section": "",
+    "text": "Introduction\n\n\nCloseread Functions\n\n\nCSS\n\n\nConclusion"
   },
   {
     "objectID": "posts/final_blog_post/index.html",
@@ -75,6 +54,62 @@
     "title": "March Madness Upsets",
     "section": "Plot 3: Average Cinderella Team vs. Case Studies",
     "text": "Plot 3: Average Cinderella Team vs. Case Studies\n\nggplot(plot4_data, aes(x = metric, y = value, fill = metric)) +\n  geom_col(show.legend = FALSE) +\n  facet_wrap(~team) +\n  coord_flip() +\n  labs(\n    title = \"Average Cinderella Team vs. Case Studies\",\n    x = \"\",\n    y = \"Standardized Value\"\n  ) +\n  theme_minimal() +\n  scale_fill_viridis_d()\n\n\n\n\n\n\n\n\nThe plot includes several of the metrics from the previous plots, such as Adjusted Offensive Efficiency, Adjusted Defensive Efficiency, Net Rating, Effective Height, and Experience. All values are standardized using z-scores, meaning a value of 0 represents the average among all double-digit seeded teams. This allows for direct comparison across teams and metrics. Looking first at the average Cinderella team, the values in this plot generally align with the patterns observed in the previous plots. Showing above average Offensive Efficiency and Net Rating, with moderate differences in other metrics.\nMoving to the case studies, each team tells a slightly different story. Davidson, before the tournament was considered a very strong double-digit seeded team, but is now famous because of their star player Stephen Curry. They closely follow the overall Cinderella profile but at a more extreme level. They were significantly above average offensively and below average defensively, reinforcing the idea that strong offensive performance can drive unexpected tournament success. This also supports the perception that Davidson may have been under-seeded as they performed more like a higher-seeded team.\nSaint Peter’s, however, stands out as the most unusual case here. As a 15-seed that reached the Elite Eight, they were below average in both offensive and defensive efficiency compared to other double-digit seeded teams. This makes their run especially surprising, as they do not fit the statistical profile associated with most Cinderella teams. Their success highlights how unpredictable the tournament can be, especially in a single elimination format.\nOverall, these case studies reinforce the idea that offensively strong teams are more likely to achieve unexpected success in March Madness. However, Saint Peter’s demonstrates that offensive efficiency is not the only path to a Cinderella run. These examples show that while general patterns exist, individual Cinderella runs can vary widely, adding to the unpredictability that defines March Madness."
+  },
+  {
+    "objectID": "posts/02_logistic/index.html",
+    "href": "posts/02_logistic/index.html",
+    "title": "Frequentist & Bayesian Logistic Regression Models",
+    "section": "",
+    "text": "After attaining the final dataset by completing the data collection and data cleaning portions of my project. I’m ready to start the modeling portions of my project. After reading through this research paper, A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball. I realized I should start with a frequentist logistic regression model because I have seen this before, and then I can try a bayesian logistic regression model."
+  },
+  {
+    "objectID": "posts/02_logistic/index.html#without-ratings",
+    "href": "posts/02_logistic/index.html#without-ratings",
+    "title": "Frequentist & Bayesian Logistic Regression Models",
+    "section": "Without Ratings",
+    "text": "Without Ratings"
+  },
+  {
+    "objectID": "posts/02_logistic/index.html#with-ratings",
+    "href": "posts/02_logistic/index.html#with-ratings",
+    "title": "Frequentist & Bayesian Logistic Regression Models",
+    "section": "With Ratings",
+    "text": "With Ratings"
+  },
+  {
+    "objectID": "posts/03_mle_db/index.html#using-hpc-ada",
+    "href": "posts/03_mle_db/index.html#using-hpc-ada",
+    "title": "MLE & Dynamic Bayes Models",
+    "section": "Using HPC ada",
+    "text": "Using HPC ada"
+  },
+  {
+    "objectID": "posts/01_data/index.html",
+    "href": "posts/01_data/index.html",
+    "title": "Data Collection & Initial Exploration",
+    "section": "",
+    "text": "This project was motivated by the question:\n\nHow can in-game win probability be estimated and visualized throughout NCAA men’s basketball games to support data-driven storytelling?\n\nThe idea emerged from an interest in combining data science and sports, particularly within the context of college basketball. Two research papers provided the foundation for the project. The first, Bayesian Estimation of In-Game Home Team Win Probability for College Basketball, introduced Bayesian approaches that update win probability as a game progresses using information such as score differential and time remaining. The second, A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball, demonstrated how Bayesian logistic regression can be used to estimate real-time win probabilities while incorporating additional game and team-level information.\nTogether, these papers provided a framework for thinking about how win probability evolves throughout a game. Building on these ideas, the goal of this project was to develop and visualize in-game win probability models using NCAA men’s basketball play-by-play data."
+  },
+  {
+    "objectID": "posts/01_data/index.html#data-summary",
+    "href": "posts/01_data/index.html#data-summary",
+    "title": "Data Collection & Initial Exploration",
+    "section": "Data Summary",
+    "text": "Data Summary\nAfter gaining familiarity with the raw data, a basic summary was created to better understand the scope of the 2026 season.\n\n#mbb_pbp |&gt; summarise(\n # total_games = n_distinct(game_id),\n  #total_playoff_games = n_distinct(game_id[season_type == 3]),\n  #total_teams = n_distinct(home_team_id)\n  #)\n\nThe 2026 dataset contains 6,275 games, including 105 postseason games. These postseason contests extend beyond the NCAA Tournament and include additional tournaments involving teams that did not qualify for March Madness.\nThe dataset also contains 366 unique home teams and 720 unique away teams. Since there were 365 NCAA Division I men’s basketball programs during the 2026 season, these counts confirm the presence of non-Division I opponents within the data. This observation is consistent with typical scheduling patterns, where Division I programs frequently play exhibition or early-season games against smaller schools."
+  },
+  {
+    "objectID": "posts/01_data/index.html#adding-team-ratings",
+    "href": "posts/01_data/index.html#adding-team-ratings",
+    "title": "Data Collection & Initial Exploration",
+    "section": "Adding Team Ratings",
+    "text": "Adding Team Ratings\nSeveral of the models developed later in the project incorporated a measure of relative team strength. To capture this information, a variable named rating_diff was created using team ratings obtained from TeamRankings.\nThese ratings provide a single numerical measure of overall team strength and are updated throughout the season. Because ratings change daily, historical ratings were collected for every date in the season, producing a dataset containing team ratings across time.\nIntegrating these ratings into the play-by-play data introduced a common data-wrangling challenge of inconsistent team names across sources. ESPN and TeamRankings use different naming conventions for certain schools, including abbreviations and alternate spellings. The fuzzyjoin package was used to resolve many of these mismatched names automatically, while the remaining mismatches were corrected manually.\nAn additional complication was that TeamRankings only provides ratings for NCAA Division one programs. For non-division one opponents, ratings were assigned as one point below the lowest available division one rating. Once team names were standardized, the ratings dataset was merged with the main play-by-play dataset. Which added the variables home_rating, away_rating, and the derived predictor rating_diff."
+  },
+  {
+    "objectID": "posts/04_prob_plots/index.html",
+    "href": "posts/04_prob_plots/index.html",
+    "title": "Predicted Probability Plots",
+    "section": "",
+    "text": "Introduction\n\n\nTrain models on 2025 Data then plot on 2026 game\n\n\nCreate Function for Predicted Provability Plots\n\n\nMLE and Dynamic Bayes Probability Plots for Neutral Sites\n\n\nConclusion"
   },
   {
     "objectID": "posts/third_blog_post/index.html",
@@ -147,10 +182,45 @@
     "text": "Plot 3: NFL Stadium Attendance by Date, Day, and Time Slot\n\nggplot(nfl_data, aes(x = date, y = weekly_attendance, color = time_slot)) +\n  geom_point() + \n  facet_wrap(~day, ncol = 1) +\n  xlim(as.Date(\"2019-09-01\"), as.Date(\"2020-01-05\")) +\n  labs(\n    title = \"NFL Stadium Attendance by Date, Day, and Time Slot\",\n    x = \"Date\",\n    y = \"Stadium Attendance\",\n    color = \"Time Slot\"\n  )\n\n\n\n\n\n\n\n\nThis final plot examines how day of the week, time of day, and week within the season jointly relates to stadium attendance. Looking first at Monday games, all of them occur in the primetime slot. Attendance for these games generally falls between 60,000 and 80,00 attendees, reflecting the importance of Monday Night Football and the tendency to schedule high profile games during this time.\nFor Thursday games, most also take place during the primetime slot, with the exception of a few games in late November. These are the Thanksgiving Day games, which include an afternoon game. This games shows the highest attendance among Thursday games largely because it was hosted by the Dallas Cowboys, who have the largest stadium in the NFL, and it is a NFL tradition for the Cowboys to host a Thanksgiving game. There are also a small number of Saturday games, which tpyically occur late in the season once the college football regular season has finished. These games provide additional national viewing opportunities and tend to follow similar attendance patterns to Sunday games.\nSunday games make up the majority of the schedule and include games across all three time slots. Most Sunday games fall between 60,000 and 80,000 attendees, though there are some outliers due to differences in stadium capacity. Compared to weekday games, there are more games below 60,000 attendees largerly because many Sunday matchups are played in the midday and afternoon time slots, which tend to draw slightly smaller crowds on average.\nOverall, across the full season, attendance appears relatively stable, with variations more strongly associated with time slot and stadium capacity than with the specific week of the season."
   },
   {
+    "objectID": "posts/first_blog_post/index.html",
+    "href": "posts/first_blog_post/index.html",
+    "title": "Premier League Playing Style",
+    "section": "",
+    "text": "The dataset used in this analysis contains English Premier League match data from the 2021-2022 season. The dataset includes 380 observations, corresponding to the 380 matches played over the course of a full season. Each match records performance statistics for both the home and away teams.\nThe variables I am most interested in are shots taken and fouls committed by the home and away teams. These variables provide insight into team playing styles, particularly whether home teams tend to play a more attacking style by generating more shots, and whether away teams are forced into a more defensive approach, potentially committing more fouls. Other metrics to also consider are corner kicks and yellow cards, as teams typically win more corners the more they attack, while yellow cards can indicate defensive play or time wasting tactics.\nThis leads to my primary question of interest:\nDo home teams play a more attacking style of soccer, while away teams adopt a more defensive style of play?\nThis data was accessed through the TidyTuesday project on a GitHub repository. The original source of the data is from Evan Gower on Kaggle.\nSome additional context about the Premier League is important for interpreting this data. The league consists of 20 teams, with each team playing 38 matches, once at home and once away against every other team. Match outcomes are scored as 3 points for a win, 1 point for a draw, and 0 points for a loss. Playing at home is widely believed to provide a competitive advantage due to factors such as crowd support, less traveling, better stadium amenities, and even differences in pitch dimensions.\nAs a result, teams often approach away matches more conservatively. Securing a draw away from home is typically considered a successful outcome, which encourages defensive strategies. In contrast, home matches are seen as opportunities to earn the maximum number of points, leading teams to adopt a more attacking style of play. Away teams may also attempt to slow the pace of the game through fouling or time-wasting, which can be reflected in higher foul counts and yellow cards.\nOverall, these contextual factors motivate an exploration of whether match statistics such as shots taken and fouls committed support the commonly held belief that home teams attack more, while away teams defend more."
+  },
+  {
+    "objectID": "posts/first_blog_post/index.html#setting-up-the-data",
+    "href": "posts/first_blog_post/index.html#setting-up-the-data",
+    "title": "Premier League Playing Style",
+    "section": "Setting up the Data",
+    "text": "Setting up the Data\n\nlibrary(tidyverse)\n\n\nsoccer &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2023/2023-04-04/soccer21-22.csv')\n\n\nsoccer &lt;- soccer |&gt; mutate(shot_diff = HS - AS,\n                 foul_diff = HF - AF,\n                 corner_diff = HC - AC)"
+  },
+  {
+    "objectID": "posts/first_blog_post/index.html#plot-1-difference-in-shots-home-vs-away",
+    "href": "posts/first_blog_post/index.html#plot-1-difference-in-shots-home-vs-away",
+    "title": "Premier League Playing Style",
+    "section": "Plot 1: Difference in Shots: Home vs Away",
+    "text": "Plot 1: Difference in Shots: Home vs Away\n\nggplot(data = soccer, aes(x = shot_diff)) +\n  geom_histogram(binwidth = 4) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  labs( title = \"Difference in Shots: Home vs Away\", \n        x = \"Home Shots − Away Shots\", \n        y = \"Number of Matches\") +\n  xlim(-29,29) +\n  theme_minimal()\n\n\n\n\n\n\n\n\nThe distribution of the histogram is approximately normal, with its peak occurring when the home teams holds a 2-6 shot advantage. Looking at extreme shot differences, the home team out shooting the away team by 15 or more shots is more common than the other way around. This pattern suggests that home teams are generally more likely to play an attacking style of soccer. However, there is still a presence of negative values showing that matches end with the away team taking more shots. This indicates the home field advantage alone does not fully determine a team’s style of play, and that other factors such as overall team quality likely plays a role."
+  },
+  {
+    "objectID": "posts/first_blog_post/index.html#plot-2-difference-in-fouls-home-vs-away",
+    "href": "posts/first_blog_post/index.html#plot-2-difference-in-fouls-home-vs-away",
+    "title": "Premier League Playing Style",
+    "section": "Plot 2: Difference in Fouls: Home vs Away",
+    "text": "Plot 2: Difference in Fouls: Home vs Away\n\nggplot(data = soccer, aes(x = foul_diff)) +\n  geom_histogram(binwidth = 3) +\n  geom_vline(xintercept = 0, linetype = \"dashed\") +\n  labs( title = \"Difference in Fouls: Home vs Away\", \n        x = \"Home Fouls − Away Fouls\", \n        y = \"Number of Matches\") + \n  xlim(-20, 20) +\n  theme_minimal()\n\n\n\n\n\n\n\n\nThe histogram peaks around a shot difference of 0, showing that in most matches there is little to no difference in the number of fouls committed by the home and away teams. However, the distribution is skewed to the left, with several negative outliers where the away team has committed many more fouls. This suggests that in certain matches, away teams are forced into a more defensive style of play, relying heavily on fouling to disrupt the home team’s attacks and slow the pace of the game."
+  },
+  {
+    "objectID": "posts/first_blog_post/index.html#plot-3-shot-difference-by-match-outcome",
+    "href": "posts/first_blog_post/index.html#plot-3-shot-difference-by-match-outcome",
+    "title": "Premier League Playing Style",
+    "section": "Plot 3: Shot Difference by Match Outcome",
+    "text": "Plot 3: Shot Difference by Match Outcome\n\nggplot(data = soccer, aes(x = FTR, y = shot_diff, fill = FTR)) +\n  geom_boxplot() +\n  geom_hline(yintercept = 0, linetype = \"dashed\") + \n  scale_x_discrete(labels = c(\"A\" = \"Away Win\", \"D\" = \"Draw\", \"H\" = \"Home Win\")) +\n  labs( title = \"Shot Difference by Match Outcome\", \n        x = \"Final Match Result\", \n        y = \"Home Shots − Away Shots\") + \n  theme_minimal() + \n  ylim(-29, 29) +\n  theme(legend.position = \"none\") +\n  coord_flip()\n\n\n\n\n\n\n\n\nThe boxplots show a clear relationship between shot difference and the final match result. When the away team wins, the median shot difference is around -2, meaning that away victories typically occur when the away team is able to generate slightly more attacking opportunities than the home team.\nFor drawn matches, the median shot difference is about 2 suggesting that home teams still tend to take more shots even when the match ends level. Which is consistent with the idea that away teams often play more defensively and are satisfied with drawing matches away from home. When the home team wins, the median show difference rises to around 7, showing that home victories are strongly associated with attacking play style where the home team dominates the possession of the ball.\nOverall, this plot supports the narrative that home teams generally play a more attacking style, while the away team adopts more defensive strategies. The plot also shows that the amount of attacking pressure a team can apply is potentially associated with the outcome of the match."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Fellowship Final Report",
+    "title": "Final Report",
     "section": "",
-    "text": "March Madness Upsets\n\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nMay 4, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nYellowstone Biodiversity\n\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nMar 10, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nNFL Stadium Attendance\n\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 18, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nPremier League Playing Style\n\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 4, 2026\n\n\nCooper Olney\n\n\n\n\n\nNo matching items"
+    "text": "Data Collection & Initial Exploration\n\n\n\nData\n\n\n\n\n\n\n\n\n\nJul 9, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nMLE & Dynamic Bayes Models\n\n\n\nModeling\n\n\n\n\n\n\n\n\n\nJul 9, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nPredicted Probability Plots\n\n\n\nVisualizations\n\n\n\n\n\n\n\n\n\nJul 9, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nFrequentist & Bayesian Logistic Regression Models\n\n\n\nModeling\n\n\n\n\n\n\n\n\n\nJul 9, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nLearning the Closeread Extension\n\n\n\nVisualizations\n\n\n\n\n\n\n\n\n\nJul 9, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\n2026 National Championship Closeread\n\n\n\nVisualizations\n\n\n\n\n\n\n\n\n\nJul 9, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nMarch Madness Upsets\n\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nMay 4, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nYellowstone Biodiversity\n\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nMar 10, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nNFL Stadium Attendance\n\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 18, 2026\n\n\nCooper Olney\n\n\n\n\n\n\n\n\n\n\n\n\nPremier League Playing Style\n\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 4, 2026\n\n\nCooper Olney\n\n\n\n\n\nNo matching items"
   }
 ]

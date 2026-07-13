@@ -1,0 +1,20 @@
+---
+title: "Learning the Closeread Extension"
+author: "Cooper Olney"
+date: "2026-07-09"
+categories: [Visualizations]
+---
+
+# Introduction
+
+
+
+# Closeread Functions
+
+
+
+# CSS
+
+
+
+# Conclusion

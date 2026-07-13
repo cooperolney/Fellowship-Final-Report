@@ -5,12 +5,294 @@
       xmlns:dc="http://purl.org/dc/elements/1.1/" 
       version="2.0">
 <channel>
-<title>Fellowship Final Report</title>
+<title>Visualizing In-Game Win Probability in College Basketball Through Data Storytelling</title>
 <link>https://your-website-url.example.com/</link>
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog built with Quarto</description>
 <generator>quarto-1.9.38</generator>
-<lastBuildDate>Mon, 04 May 2026 04:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 09 Jul 2026 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>Data Collection &amp; Initial Exploration</title>
+  <dc:creator>Cooper Olney</dc:creator>
+  <link>https://your-website-url.example.com/posts/01_data/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>This project was motivated by the question:</p>
+<blockquote class="blockquote">
+<p>How can in-game win probability be estimated and visualized throughout NCAA men’s basketball games to support data-driven storytelling?</p>
+</blockquote>
+<p>The idea emerged from an interest in combining data science and sports, particularly within the context of college basketball. Two research papers provided the foundation for the project. The first, <em>Bayesian Estimation of In-Game Home Team Win Probability for College Basketball</em>, introduced Bayesian approaches that update win probability as a game progresses using information such as score differential and time remaining. The second, <em>A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball</em>, demonstrated how Bayesian logistic regression can be used to estimate real-time win probabilities while incorporating additional game and team-level information.</p>
+<p>Together, these papers provided a framework for thinking about how win probability evolves throughout a game. Building on these ideas, the goal of this project was to develop and visualize in-game win probability models using NCAA men’s basketball play-by-play data.</p>
+</section>
+<section id="data-collection" class="level1">
+<h1>Data Collection</h1>
+<p>After reviewing the research papers, the first objective was to obtain a comprehensive dataset of NCAA men’s basketball play-by-play data. The <code>hoopR</code> package provided an accessible solution through the <code>load_mbb_pbp()</code> function, which retrieves play-by-play data sourced from ESPN.</p>
+<p>Initially, data from every available season (2002–2026) was considered. However, the full dataset exceeded the memory limitations of my computer. As a result, the project was narrowed to the 2025 and 2026 seasons, which provided a sufficiently large sample while remaining computationally manageable.</p>
+<p>The raw play-by-play dataset contains nearly three million rows and 57 variables per season. Each row represents a single game event, such as a made basket, rebound, turnover, foul, or timeout. The data are organized chronologically within each game, allowing the complete sequence of events to be reconstructed from the opening tip to the final buzzer.</p>
+</section>
+<section id="initial-data-exploration" class="level1">
+<h1>Initial Data Exploration</h1>
+<p>The first stage of exploration focused on understanding the variables and identifying which information would be useful for predicting in-game win probability. Since the dataset did not contain a win probability variable, the necessary predictors would need to be derived from the play-by-play data.</p>
+<p>An initial review of the 2026 season revealed 6,275 unique games. The dataset included contests involving both NCAA division 1 and non-division 1 programs, reflecting the common practice of division 1 teams scheduling non-conference games against smaller schools early in the season.</p>
+<p>To better understand the structure of the data, individual games were examined in detail. One example was Duke’s NCAA Tournament matchup against UConn, a game in which Duke built a substantial early lead before UConn completed a 19-point comeback. Visualizing score differential throughout the game provided an early illustration of how game states change over time and how those changes might influence win probability estimates.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#duke_uconn |&gt;</span></span>
+<span id="cb1-2"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ggplot(aes(x = time_elapsed, y = lead_diff)) +</span></span>
+<span id="cb1-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#  geom_line() +</span></span>
+<span id="cb1-4"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># geom_hline(yintercept = 0, linetype = "dashed") +</span></span>
+<span id="cb1-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#  theme_minimal()</span></span></code></pre></div></div>
+</div>
+<p>The dataset was also inspected for potential scraping or recording issues. Games were sorted by the number of recorded events, revealing a range from 287 to 833 events. Investigation showed that these irregularities originated from ESPN’s source data rather than from the <code>hoopR</code> package itself. In one case, incomplete play-by-play information resulted in an unusually low event count, while another game contained duplicated events that inflated the total number of recorded events. Although a small number of games contained imperfections, the overall quality of the dataset was sufficient for modeling purposes.</p>
+<section id="data-summary" class="level2">
+<h2 class="anchored" data-anchor-id="data-summary">Data Summary</h2>
+<p>After gaining familiarity with the raw data, a basic summary was created to better understand the scope of the 2026 season.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#mbb_pbp |&gt; summarise(</span></span>
+<span id="cb2-2"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># total_games = n_distinct(game_id),</span></span>
+<span id="cb2-3">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#total_playoff_games = n_distinct(game_id[season_type == 3]),</span></span>
+<span id="cb2-4">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#total_teams = n_distinct(home_team_id)</span></span>
+<span id="cb2-5">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#)</span></span></code></pre></div></div>
+</div>
+<p>The 2026 dataset contains 6,275 games, including 105 postseason games. These postseason contests extend beyond the NCAA Tournament and include additional tournaments involving teams that did not qualify for March Madness.</p>
+<p>The dataset also contains 366 unique home teams and 720 unique away teams. Since there were 365 NCAA Division I men’s basketball programs during the 2026 season, these counts confirm the presence of non-Division I opponents within the data. This observation is consistent with typical scheduling patterns, where Division I programs frequently play exhibition or early-season games against smaller schools.</p>
+</section>
+</section>
+<section id="data-wrangling" class="level1">
+<h1>Data Wrangling</h1>
+<p>Once the structure of the dataset was understood, the next step was to create variables that could be used for win probability modeling. Two foundational variables were <code>time_elapsed</code> and <code>lead_diff</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#mutate(time_elapsed = 2400 - end_game_seconds_remaining,</span></span>
+<span id="cb3-2"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#        lead_diff = home_score - away_score)</span></span></code></pre></div></div>
+</div>
+<p>The <code>time_elapsed</code> variable measures the number of seconds that have elapsed since the start of regulation, while <code>lead_diff</code> represents the home team’s score differential. Positive values indicate a home team lead, while negative values indicate an away team lead.</p>
+<p>A binary response variable, <code>home_win</code>, was also created, where a value of 1 indicates a home team victory and a value of 0 indicates an awa -team victory. During this process, a small issue was identified in which the final observation of some games produced a missing value for <code>time_elapsed.</code> This was corrected during preprocessing.</p>
+<p>The raw play-by-play structure records observations only when an event occurs. For example, the <code>time_elapsed</code> values for a game might appear as 0, 14, 17, and 35 seconds. To support modeling, the data were transformed so that every game contained one observation per second. Duplicate events occurring at the same timestamp were removed, and the game state was carried forward between recorded events. After this transformation, every regulation game contained exactly 2401 observations, corresponding to each second from the opening tip through the end of regulation.</p>
+<section id="adding-team-ratings" class="level2">
+<h2 class="anchored" data-anchor-id="adding-team-ratings">Adding Team Ratings</h2>
+<p>Several of the models developed later in the project incorporated a measure of relative team strength. To capture this information, a variable named <code>rating_diff</code> was created using team ratings obtained from TeamRankings.</p>
+<p>These ratings provide a single numerical measure of overall team strength and are updated throughout the season. Because ratings change daily, historical ratings were collected for every date in the season, producing a dataset containing team ratings across time.</p>
+<p>Integrating these ratings into the play-by-play data introduced a common data-wrangling challenge of inconsistent team names across sources. ESPN and TeamRankings use different naming conventions for certain schools, including abbreviations and alternate spellings. The <code>fuzzyjoin</code> package was used to resolve many of these mismatched names automatically, while the remaining mismatches were corrected manually.</p>
+<p>An additional complication was that TeamRankings only provides ratings for NCAA Division one programs. For non-division one opponents, ratings were assigned as one point below the lowest available division one rating. Once team names were standardized, the ratings dataset was merged with the main play-by-play dataset. Which added the variables <code>home_rating</code>, <code>away_rating</code>, and the derived predictor <code>rating_diff.</code></p>
+</section>
+</section>
+<section id="the-final-dataset" class="level1">
+<h1>The Final Dataset</h1>
+<p>The final modeling dataset was created using the 2025 season, which served as the training data for all subsequent models. The 2026 season was reserved for evaluating model performance and generating win probability visualizations for individual games.</p>
+<p>Following preprocessing, the dataset contained approximately 14.7 million observations, with each row representing a single second of a game. Three predictor variables were used throughout the project:</p>
+<ul>
+<li><code>time_elapsed</code>: the number of seconds elapsed in regulation (0–2400)</li>
+<li><code>lead_diff</code>: the home team’s score differential</li>
+<li><code>rating_diff</code>: the difference between the home and away team ratings</li>
+</ul>
+<p>The response variable, <code>home_win</code>, indicates whether the home team won the game.</p>
+<p>This transformed dataset provided a consistent representation of game state at every second of every game, forming the foundation for the win probability models developed in later stages of the project.</p>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>This first stage of the project focused on obtaining, understanding, and preparing NCAA men’s basketball play-by-play data for modeling. Through exploratory analysis and data wrangling, the raw event-level data were transformed into a second-by-second representation of game state, while team strength information was incorporated through external ratings data.</p>
+<p>With a clean and structured dataset in place, the next step was to investigate statistical approaches for estimating in-game win probability. The following post introduces both Frequentist and Bayesian logistic regression models, providing the first framework for translating game state variables into estimates of the home team’s probability of winning.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>Data</category>
+  <guid>https://your-website-url.example.com/posts/01_data/</guid>
+  <pubDate>Thu, 09 Jul 2026 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>MLE &amp; Dynamic Bayes Models</title>
+  <dc:creator>Cooper Olney</dc:creator>
+  <link>https://your-website-url.example.com/posts/03_mle_db/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level1">
+
+</section>
+<section id="mle-method-calculation" class="level1">
+<h1>MLE Method &amp; Calculation</h1>
+</section>
+<section id="mle-heatmap" class="level1">
+<h1>MLE Heatmap</h1>
+</section>
+<section id="dynamic-bayes-method-calculation" class="level1">
+<h1>Dynamic Bayes Method &amp; Calculation</h1>
+</section>
+<section id="dynamic-bayes-heatmap" class="level1">
+<h1>Dynamic Bayes Heatmap</h1>
+<section id="using-hpc-ada" class="level2">
+<h2 class="anchored" data-anchor-id="using-hpc-ada">Using HPC ada</h2>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+
+
+</section>
+
+ ]]></description>
+  <category>Modeling</category>
+  <guid>https://your-website-url.example.com/posts/03_mle_db/</guid>
+  <pubDate>Thu, 09 Jul 2026 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Predicted Probability Plots</title>
+  <dc:creator>Cooper Olney</dc:creator>
+  <link>https://your-website-url.example.com/posts/04_prob_plots/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level1">
+
+</section>
+<section id="train-models-on-2025-data-then-plot-on-2026-game" class="level1">
+<h1>Train models on 2025 Data then plot on 2026 game</h1>
+</section>
+<section id="create-function-for-predicted-provability-plots" class="level1">
+<h1>Create Function for Predicted Provability Plots</h1>
+</section>
+<section id="mle-and-dynamic-bayes-probability-plots-for-neutral-sites" class="level1">
+<h1>MLE and Dynamic Bayes Probability Plots for Neutral Sites</h1>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+
+
+</section>
+
+ ]]></description>
+  <category>Visualizations</category>
+  <guid>https://your-website-url.example.com/posts/04_prob_plots/</guid>
+  <pubDate>Thu, 09 Jul 2026 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Frequentist &amp; Bayesian Logistic Regression Models</title>
+  <dc:creator>Cooper Olney</dc:creator>
+  <link>https://your-website-url.example.com/posts/02_logistic/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>After attaining the final dataset by completing the data collection and data cleaning portions of my project. I’m ready to start the modeling portions of my project. After reading through this research paper, <em>A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball.</em> I realized I should start with a frequentist logistic regression model because I have seen this before, and then I can try a bayesian logistic regression model.</p>
+</section>
+<section id="frequentist-logistic-regression-model" class="level1">
+<h1>Frequentist Logistic Regression Model</h1>
+<section id="without-ratings" class="level2">
+<h2 class="anchored" data-anchor-id="without-ratings">Without Ratings</h2>
+</section>
+<section id="with-ratings" class="level2">
+<h2 class="anchored" data-anchor-id="with-ratings">With Ratings</h2>
+</section>
+</section>
+<section id="bayesian-logistic-regression-model" class="level1">
+<h1>Bayesian Logistic Regression Model</h1>
+</section>
+<section id="adding-home-court-advantage-to-both-models" class="level1">
+<h1>Adding Home Court Advantage to Both Models</h1>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+
+
+</section>
+
+ ]]></description>
+  <category>Modeling</category>
+  <guid>https://your-website-url.example.com/posts/02_logistic/</guid>
+  <pubDate>Thu, 09 Jul 2026 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Learning the Closeread Extension</title>
+  <dc:creator>Cooper Olney</dc:creator>
+  <link>https://your-website-url.example.com/posts/05_closeread_test/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level1">
+
+</section>
+<section id="closeread-functions" class="level1">
+<h1>Closeread Functions</h1>
+</section>
+<section id="css" class="level1">
+<h1>CSS</h1>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+
+
+</section>
+
+ ]]></description>
+  <category>Visualizations</category>
+  <guid>https://your-website-url.example.com/posts/05_closeread_test/</guid>
+  <pubDate>Thu, 09 Jul 2026 04:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>2026 National Championship Closeread</title>
+  <dc:creator>Cooper Olney</dc:creator>
+  <link>https://your-website-url.example.com/posts/06_championship/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="insert-closeread" class="level1">
+
+
+
+</section>
+
+ ]]></description>
+  <category>Visualizations</category>
+  <guid>https://your-website-url.example.com/posts/06_championship/</guid>
+  <pubDate>Thu, 09 Jul 2026 04:00:00 GMT</pubDate>
+</item>
 <item>
   <title>March Madness Upsets</title>
   <dc:creator>Cooper Olney</dc:creator>

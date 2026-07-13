@@ -5,7 +5,7 @@ project:
 website:
   description: "A blog built with Quarto"
   site-url: https://your-website-url.example.com # you must change this appropriately for RSS feeds to work properly
-  title: "Fellowship Final Report"
+  title: "Visualizing In-Game Win Probability in College Basketball Through Data Storytelling"
   navbar:
     right:
       - about.qmd

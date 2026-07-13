@@ -1,0 +1,110 @@
+---
+title: "Frequentist & Bayesian Logistic Regression Models"
+author: "Cooper Olney"
+date: "2026-07-09"
+categories: [Modeling]
+---
+
+# Introduction
+After attaining the final dataset by completing the data collection and data cleaning portions of my project. I'm ready to start the modeling portions of my project. After reading through this research paper, *A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball.* I realized I should start with a frequentist logistic regression model because I have seen this in my coursework before, and then I can try a bayesian logistic regression model based on what I learned from the research paper. 
+
+
+# Frequentist Logistic Regression Model
+I first got the cleaned dataset for the 2025 season as I'm training all of my models on the 2025 season. At first I only used `time_elapsed`, `score_diff`, their interaction term for the frequentist logistic regression model and then I incorporated `rating_diff` into another version of the model.
+
+## Without Team Rating
+Here is how the code for the Frequentist Logistic Regression without Rating model looked:
+
+```{r}
+#log_mod <- glm(home_win ~ time_elapsed + lead_diff + time_elapsed:lead_diff,
+ #              data = mbb_pbp_2025, family = "binomial")
+```
+
+I then created the model predictions by using the `ggpredict()` function from the `ggeffects` R package, and then I'm able to put them into a plot.
+
+```{r}
+#ggplot(data = preds_log_mod, aes(x = time_elapsed, y = predicted)) +
+ # geom_line(aes(color = factor(lead_diff)), linewidth = 1.5) +
+  #scale_colour_viridis_d(option = "D") +
+  #labs(x = "Time Elapsed (seconds)", 
+   #    y = "Predicted Home Win Probability",
+    #   color = "Lead Diff") +
+  #theme_minimal()
+```
+
+Now with the regression lines we can see the predicted in-game win probability for the home team throughout the game at different lead differences.
+
+## With Team Rating
+Here is how the code for the Frequentist Logistic Regression with Rating model looked:
+
+```{r}
+#log_mod_rank <- glm(home_win ~ lead_diff + time_elapsed + rating_diff + 
+ #                       time_elapsed:lead_diff + time_elapsed:rating_diff,
+  #                    data = final_data, family = "binomial")
+```
+
+This model adds `rating_diff` and the interaction term between `time_elapsed` and `rating_diff`. Now the model is ready to be visualized with a predicted win probability plot that shows how win probability of the home team changes throughout the game.
+
+```{r}
+#ggplot(preds_log_mod_rank, aes(x = time_elapsed, y = predicted, 
+ #                         color = factor(lead_diff))) +
+  #geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = factor(lead_diff)),
+   #           alpha = 0.25, color = NA) +
+#  geom_line(linewidth = 1.5) +
+ # scale_colour_viridis_d(option = "D") +
+  #scale_fill_viridis_d(option = "D") +
+#  labs(x = "Time Elapsed (seconds)", 
+ #      y = "Predicted Home Win Probability",
+  #     color = "Lead Diff", 
+   #    fill = "Lead Diff",
+    #   title = "Logistic Regression") +
+#  theme_minimal()
+```
+
+We can see that the win probability for the home team is shifted __ at the start of the game compared to the previous model. Also we see that both models produce similarly shaped regression lines that are more similar towards the end of the game.
+
+# Bayesian Logistic Regression Model
+Bayesian statistics is this... From the research paper I learned...
+
+Moving on to the Bayesian Logistic Regression model. Here is what the model code looked like: 
+
+```{r}
+#brm_mod_rank <- brm(home_win ~ lead_scaled + time_scaled + rating_scaled + #time_scaled:lead_scaled + time_scaled:rating_scaled,
+ #                   data = subset_games,
+  #                  family = bernoulli(),
+   #                 prior = c(prior(normal(0, 4), class = "Intercept"))
+#)
+```
+
+There was initially an issue with running this model, it wouldn't run on my computer as it couldn't train the model quickly enough. So to make the model run quicker I scaled all three of the predictor variables. Also I had to run the model on a HPC (high performance computing), so that I could run the model overnight. Once the model finally finished running on the training data.
+
+```{r}
+#ggplot(preds_brm_mod_rank_scaled, aes(x = time_elapsed, y = predicted, 
+ #                         color = factor(lead_diff))) +
+  #geom_ribbon(aes(ymin = lower, ymax = upper, fill = factor(lead_diff)),
+   #           alpha = 0.25, color = NA) +
+#  geom_line(linewidth = 1.5) +
+ # scale_colour_viridis_d(option = "D") +
+  #scale_fill_viridis_d(option = "D") +
+#  labs(x = "Time Elapsed (seconds)", 
+ #      y = "Predicted Home Win Probability",
+  #     color = "Lead Diff", 
+   #    fill = "Lead Diff",
+    #   title = "Bayesian Logistic") +
+#  theme_minimal()
+```
+
+Compared to the frequentist logistic regression models, the bayesian model compares very similar to the model that had the `rating_diff` variable. This means the prior didn't add much to the model.
+
+# Adding Home Court Advantage to Both Models
+The next thing I wanted to try with the logistic models is incorporating a natural home court advantage into them. From TeamRankings they say that when a team plays at home they should get a +3.3 to their rating. Then I had to create a variable for neutral site games, so some games the home team gets the + 3.3 and other games neither team get a home court advantage. Here is how this change affected the regression plot.
+
+```{r}
+
+```
+
+...
+
+
+# Conclusion
+

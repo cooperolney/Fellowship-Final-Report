@@ -1,0 +1,24 @@
+---
+title: "Predicted Probability Plots"
+author: "Cooper Olney"
+date: "2026-07-09"
+categories: [Visualizations]
+---
+
+# Introduction
+
+
+
+# Train models on 2025 Data then plot on 2026 game
+
+
+
+# Create Function for Predicted Provability Plots
+
+
+
+# MLE and Dynamic Bayes Probability Plots for Neutral Sites
+
+
+
+# Conclusion

@@ -2,6 +2,12 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/01_data/index.html",
+      "/posts/03_mle_db/index.html",
+      "/posts/04_prob_plots/index.html",
+      "/posts/02_logistic/index.html",
+      "/posts/05_closeread_test/index.html",
+      "/posts/06_championship/index.html",
       "/posts/final_blog_post/index.html",
       "/posts/third_blog_post/index.html",
       "/posts/second_blog_post/index.html",
