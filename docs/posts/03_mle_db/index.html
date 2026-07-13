@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -73,6 +108,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -160,24 +224,87 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
+<p>While developing the Frequentist and Bayesian logistic regression models, I also explored a different approach based on the methods presented in <em>Bayesian Estimation of In-Game Home Team Win Probability for College Basketball.</em> Unlike logistic regression, which estimates win probability through a statistical model fitted to predictor variables, these methods estimate win probability directly from historical game outcomes.</p>
+<p>The two approaches examined were the <strong>Maximum Likelihood Estimation (MLE)</strong> method and the <strong>Dynamic Bayes</strong> method. Both methods use historical combinations of game time and score differential to estimate the probability that the home team will ultimately win. One of the goals of this stage of the project was to determine whether these methods would produce results similar to those reported in the research paper when trained using only a single season of NCAA men’s basketball data.</p>
 </section>
 <section id="mle-method-calculation" class="level1">
 <h1>MLE Method &amp; Calculation</h1>
+<p>The MLE method is the simpler of the two approaches and relies only on game time and score differential. For every combination of elapsed time and score differential, the method tracks:</p>
+<ol type="1">
+<li><p>The total number of historical games that passed through that game state.</p></li>
+<li><p>The number of those games that resulted in a home-team victory.</p></li>
+</ol>
+<p>The estimated win probability is then calculated as:</p>
+<p><span class="math inline">\(P(Home Win) = HomeTeam Wins / Total Games\)</span></p>
+<p>For example, if 100 games reached a state where the home team led by 5 points with 10 minutes remaining and the home team ultimately won 75 of those games, the estimated win probability for that game state would be 0.75.</p>
+<p>This approach is intuitive because it relies entirely on observed historical outcomes. However, its accuracy depends heavily on the amount of available data. Some combinations of time and score occur frequently, while others occur only a handful of times throughout a season.</p>
 </section>
 <section id="mle-heatmap" class="level1">
 <h1>MLE Heatmap</h1>
+<p>One motivation for implementing the MLE method was to compare my results with those presented in the research paper. Although the paper used multiple seasons of data, I wanted to determine whether a similar win probability surface could be produced using only the 2025 season data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(mle_heatmap_clean, aes(x = time_elapsed, y = lead_diff, fill = win_prob)) +</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_tile() +</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_fill_gradientn(colors = c("blue", "green", "white", "yellow", "red")) +</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  labs(x = "Time elapsed", </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a> <span class="co">#      y = "Score diff",</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     fill = "p") +</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The heatmap displays win probability across combinations of elapsed time and score differential. The x-axis represents time elapsed, while the y-axis represents the home team’s lead. Red regions correspond to game states where the home team is highly likely to win, while blue regions represent situations where the home team is unlikely to win.</p>
+<p>The overall structure of the heatmap aligned with expectations. As the home team’s lead increased, win probability generally increased as well. Similarly, score differential became more influential as the game progressed and less time remained for a comeback.</p>
+<p>However, several isolated regions displayed unexpectedly high or low win probabilities. For example, some score deficits early in games were associated with unusually high home-team win probabilities. These values were caused by sparse data, where only a small number of historical observations existed for a particular game state. Since the MLE method relies entirely on observed occurences, rare combinations can produce unstable estimates.</p>
+<p>This behavior was also evident in the heatmaps presented in the research paper. Although the overall shape of the probability surface was reasonable, isolated regions with unexpected values remained due to limited observations in certain game states.</p>
 </section>
 <section id="dynamic-bayes-method-calculation" class="level1">
 <h1>Dynamic Bayes Method &amp; Calculation</h1>
+<p>The Dynamic Bayes method builds upon the MLE approach while addressing some of its limitations. Like the MLE method, it estimates win probability using historical game states and outcomes. However, it introduces two important modifications.</p>
+<p>The first modification is the use of windows rather than individual time and score combinations. Instead of treating each game state independently, nearby game states are grouped together. For a given observation, the method considers a window of ±3 seconds in time and ±2 points in score differential. As a result, a game state contributes information not only to its exact location but also to neighboring locations.</p>
+<p>This windowing approach increases the number of observations available for each estimate and reduces the impact of rare game states. Rather than relying on a handful of historical examples, the method borrows information from similar situations that occurred nearby in time and score.</p>
+<p>The second modification is the introduction of a dynamic Beta prior. In Bayesian statistics, a Beta distribution can be interpreted as representing prior observations before any actual data are observed. If a prior is specified as Beta(α,β), then α represents prior successes and β represents prior failures.</p>
+<p>The Dynamic Bayes method uses seven possible priors:</p>
+<ul>
+<li>Beta(19, 1)</li>
+<li>Beta(9, 1)</li>
+<li>Beta(4, 1)</li>
+<li>Beta(1, 1)</li>
+<li>Beta(1, 4)</li>
+<li>Beta(1, 9)</li>
+<li>Beta(1, 19)</li>
+</ul>
+<p>The prior selected depends on the current game situation. Large leads late in games receive stronger priors favoring the leading team, while close games receive weaker and more neutral priors. This dynamic structure helps stabilize estimates when historical observations are limited.</p>
+<p>Together, the windowing procedure and the Bayesian prior reduce the volatility observed in the MLE estimates. The windows increase the effective sample size, while the prior prevents extreme probabilities from occurring solely because of a small number of observations.</p>
 </section>
 <section id="dynamic-bayes-heatmap" class="level1">
 <h1>Dynamic Bayes Heatmap</h1>
-<section id="using-hpc-ada" class="level2">
-<h2 class="anchored" data-anchor-id="using-hpc-ada">Using HPC ada</h2>
+<p>As with the MLE method, a heatmap was created to compare the resulting probability surface with the one reported in the research paper.</p>
+<p>An initial challenge was computational. Running the Dynamic Bayes method on an entire season of second-by-second play-by-play data required substantially more processing time than any of the previous models. Early testing was therefore performed on a subset of approximately 50 games. While the method worked as expected, the resulting heatmap contained many empty regions because certain game states were not represented in the smaller sample.</p>
+<p>After gaining access to a high-performance computing (HPC) system, I was able to run the method on the complete season dataset.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(db_full, aes(x = time_elapsed, y = lead_diff, fill = win_prob)) +</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_tile() +</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_fill_gradientn(colors = c("blue", "green", "white", "yellow", "red")) +</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  labs(</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a> <span class="co">#   x = "Time elapsed (seconds)", </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  y = "Score differential",</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>   <span class="co"># fill = "p"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  ) +</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a> <span class="co"># theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The resulting heatmap closely matched the patterns reported in the research paper. The overall probability surface appeared smoother than the MLE heatmap, and the isolated regions with unrealistic probabilities were largely eliminated.</p>
+<p>The benefits of the windowing approach were particularly apparent in rare game states. By incorporating information from nearby observations and combining it with a Bayesian prior, the Dynamic Bayes method produced more stable and interpretable win probability estimates across the entire game state space.</p>
+<section id="using-the-high-performance-computing-system" class="level2">
+<h2 class="anchored" data-anchor-id="using-the-high-performance-computing-system">Using the High-Performance Computing System</h2>
+<p>A significant part of implementing the Dynamic Bayes method involved learning how to use Ada, St.&nbsp;Lawrence University’s high-performance computer. The computational demands of the model exceeded what was practical on my personal laptop, particularly when working with a full season of second-by-second play-by-play data.</p>
+<p>Using the HPC system allowed the model to be executed remotely and run continuously for long periods of time. A full-season Dynamic Bayes run required nearly an entire day of computation, making remote processing essential.</p>
+<p>Beyond this project, learning to use an HPC environment was valuable because many modern data science and statistical applications involve datasets or algorithms that are too computationally intensive for a standard laptop. The experience provided an introduction to distributed computing resources and demonstrated how specialized infrastructure can enable analyses that would otherwise be impractical.</p>
 </section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
+<p>This post concludes the model development stage of the project. Across the logistic regression models, MLE approach, and Dynamic Bayes method, five different techniques were explored for estimating in-game win probability.</p>
+<p>Although each method approached the problem differently, they all relied on the same underlying goal: translating the current game state into an estimate of the home team’s probability of winning. Comparing these methods provided insight into both traditional statistical modeling approaches and methods based directly on historical game outcomes.</p>
+<p>With the modeling stage complete, the next step is to focus on visualization. The following post demonstrates how these model outputs can be transformed into predicted win probability plots, allowing individual games to be analyzed through the changing probability of a home-team victory as the game unfolds.</p>
 
 
 </section>

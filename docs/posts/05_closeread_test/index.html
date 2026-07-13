@@ -44,7 +44,10 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-03ebed3cc6d9517934d904b30f9ec24d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-45431c2918bd31147ddb3fa7038bb99f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/intersection-observer-polyfill-1.0.0/intersection-observer.js"></script>
+<script src="../../site_libs/quarto-contrib/scrollama-3.2.0/scrollama.min.js"></script>
+<script src="../../site_libs/quarto-contrib/closeread-0.1.0/closeread.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,12 +75,15 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<meta cr-debug-mode="false">
+<meta cr-remove-header-space="false">
 
 
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../site_libs/quarto-contrib/quarto-project/qmd-lab/closeread/closeread.css">
+<link rel="stylesheet" href="closeread_test.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -118,7 +124,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
+    <div class="quarto-title column-page">
       <h1 class="title">Learning the Closeread Extension</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Visualizations</div>
@@ -127,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
     
   
-  <div class="quarto-title-meta">
+  <div class="quarto-title-meta column-page">
 
       <div>
       <div class="quarto-title-meta-heading">Author</div>
@@ -147,12 +153,21 @@ ul.task-list li input[type="checkbox"] {
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+      <!-- user-provided yaml closeread style options -->
+      <style>
+        :root {
+          --cr-narrative-text-color-sidebar: black;
+--cr-narrative-background-color-sidebar: #009CDE;
+--cr-section-background-color: #009CDE;
+        }
+      </style>
+    
 
 
 
@@ -160,15 +175,77 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
+<p><strong>Post 5</strong></p>
+<p>Continuing the visualization stage of the project, the next step was learning how to use the Quarto <strong>Closeread</strong> extension. Closeread is a custom Quarto format that supports scrollytelling, a style of presentation where narrative text and visualizations are linked together as the reader moves through a document.</p>
+<p>The goal of this stage was not to analyze basketball games directly, but rather to develop the tools needed to communicate the results of the project effectively. Before creating a final polished presentation, I first needed to understand the features available in Closeread and experiment with different design choices. This process involved building a test document, exploring interactive features, and using custom CSS styling to improve the overall appearance and usability of the final product.</p>
 </section>
-<section id="closeread-functions" class="level1">
-<h1>Closeread Functions</h1>
+<section id="learning-the-closeread-framework" class="level1">
+<h1>Learning the Closeread Framework</h1>
+<p>One of the defining features of Closeread is its ability to synchronize text and visualizations. As a reader scrolls through the page, explanatory text appears on one side of the screen while plots, images, or other visual elements remain visible on the other side.</p>
+<p>Unlike a traditional report where figures are placed between blocks of text, Closeread allows visualizations to remain fixed while the narrative changes. This structure encourages readers to focus on specific aspects of a plot as they progress through the document and creates a more interactive reading experience.</p>
+<p>To learn how this framework operates, I experimented with the core Closeread components, including sections and sticky elements. These features control how text and visualizations are displayed throughout the document and form the foundation of the scrollytelling experience.</p>
+<div class="case-study-intro">
+<p>The following example demonstrates several of the features that I experimented with while learning the Closeread extension. The win probability plot is included only as a sample visualization and is used to illustrate how narrative text and graphics can interact within a scrollytelling document.</p>
+</div>
+<div class="cr-section cr-column-screen sidebar-left">
+<div class="narrative-col">
+<div class="trigger new-trigger" data-focus-on="cr-game-plot-01">
+<div class="narrative">
+<p><span class="cr-bubble">The first feature I explored was the basic Closeread layout. As the reader scrolls through the document, the narrative text changes while the visualization remains fixed on the screen. This creates a stronger connection between the written explanation and the figure being discussed.</span></p>
+</div>
+</div>
+<div class="trigger new-trigger" data-scale-by="2.5" data-focus-on="cr-game-plot-01" data-pan-to="0%,70%">
+<div class="narrative">
+<p><span class="cr-bubble">Another feature I tested was the ability to zoom into specific regions of a visualization. Using the <code>pan-to</code> and <code>scale-by</code> options, the document can automatically focus on an area of interest. This allows a reader’s attention to be directed toward a specific event or pattern without requiring them to interpret the entire graphic at once.</span> </p>
+</div>
+</div>
+<div class="trigger new-trigger" data-focus-on="cr-game-plot-01">
+<div class="narrative">
+<p><span class="cr-bubble">The final step is returning to the full visualization. This transition restores the broader context of the plot and allows the reader to connect the highlighted region back to the overall game. When the plot returns to its original view, the picture-in-picture display is no longer needed and disappears automatically.</span></p>
+</div>
+</div>
+<div class="trigger">
+<div class="cr-minimap-float narrative">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sticky-col">
+<div class="sticky-col-stack">
+<div id="cr-game-plot-01" class="sticky">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="css" class="level1">
-<h1>CSS</h1>
+<section id="interactive-features-and-css-customization" class="level1">
+<h1>Interactive Features and CSS Customization</h1>
+<p>A major focus of the test document was understanding how Closeread can transform a static visualization into a more interactive experience. The demonstration above illustrates two features that were particularly useful: <strong>pan-to</strong> and <strong>scale-by</strong>. Together, these tools allow a document to zoom into selected regions of a figure and direct the reader’s attention toward specific details.</p>
+<p>In addition to Closeread’s built-in functionality, I experimented with custom CSS styling to improve the presentation of the document. Initial modifications included adding borders around visualizations, adjusting spacing, and creating colored text containers to improve readability and visual contrast.</p>
+<p>The most advanced customization was the picture-in-picture feature displayed during the zoomed view above. When a plot is enlarged, readers can lose sight of the broader context of the visualization. To address this issue, a miniature version of the full plot appears in the corner of the screen while the zoom is active. This allows readers to maintain awareness of where the zoomed region is located within the complete figure. Once the document transitions away from the zoomed section, the miniature plot automatically disappears.</p>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
+<p>This post documented the process of learning the Quarto Closeread extension and exploring the interactive features that support data-driven storytelling. Through experimentation with scrolling interactions, visualization transitions, and custom CSS styling, I developed a framework for presenting win probability analysis in a more engaging and accessible format.</p>
+<p>An important takeaway from this stage of the project was that effective data storytelling requires more than accurate statistical models. While previous stages focused on collecting data, developing models, and generating win probability estimates, this phase emphasized how those results could be communicated to an audience. Features such as guided scrolling, interactive zooming, and custom visual design demonstrated how presentation choices can help readers better understand and engage with statistical analyses.</p>
+<p>The following post serves as the culmination of the project. Unlike the previous posts, which focused on methodology, modeling, and development, the final Closeread document is a polished presentation of the 2026 NCAA Men’s Basketball National Championship game. It applies the techniques developed throughout the project to create an interactive narrative centered on the changing win probability throughout the game.</p>
 
 
 </section>

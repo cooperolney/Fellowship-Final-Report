@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -160,22 +195,90 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>After attaining the final dataset by completing the data collection and data cleaning portions of my project. I’m ready to start the modeling portions of my project. After reading through this research paper, <em>A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball.</em> I realized I should start with a frequentist logistic regression model because I have seen this before, and then I can try a bayesian logistic regression model.</p>
+<p>After attaining the final dataset by completing the data collection and data cleaning portions of my project. I’m ready to start the modeling portions of my project. After reading through this research paper, <em>A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball.</em> I realized I should start with a frequentist logistic regression model because I have seen this in my coursework before, and then I can try a bayesian logistic regression model based on what I learned from the research paper.</p>
 </section>
 <section id="frequentist-logistic-regression-model" class="level1">
 <h1>Frequentist Logistic Regression Model</h1>
-<section id="without-ratings" class="level2">
-<h2 class="anchored" data-anchor-id="without-ratings">Without Ratings</h2>
+<p>I first got the cleaned dataset for the 2025 season as I’m training all of my models on the 2025 season. At first I only used <code>time_elapsed</code>, <code>score_diff</code>, their interaction term for the frequentist logistic regression model and then I incorporated <code>rating_diff</code> into another version of the model.</p>
+<section id="without-team-rating" class="level2">
+<h2 class="anchored" data-anchor-id="without-team-rating">Without Team Rating</h2>
+<p>Here is how the code for the Frequentist Logistic Regression without Rating model looked:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#log_mod &lt;- glm(home_win ~ time_elapsed + lead_diff + time_elapsed:lead_diff,</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#              data = mbb_pbp_2025, family = "binomial")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>I then created the model predictions by using the <code>ggpredict()</code> function from the <code>ggeffects</code> R package, and then I’m able to put them into a plot.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(data = preds_log_mod, aes(x = time_elapsed, y = predicted)) +</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_line(aes(color = factor(lead_diff)), linewidth = 1.5) +</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_colour_viridis_d(option = "D") +</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#labs(x = "Time Elapsed (seconds)", </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    y = "Predicted Home Win Probability",</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   color = "Lead Diff") +</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now with the regression lines we can see the predicted in-game win probability for the home team throughout the game at different lead differences.</p>
 </section>
-<section id="with-ratings" class="level2">
-<h2 class="anchored" data-anchor-id="with-ratings">With Ratings</h2>
+<section id="with-team-rating" class="level2">
+<h2 class="anchored" data-anchor-id="with-team-rating">With Team Rating</h2>
+<p>Here is how the code for the Frequentist Logistic Regression with Rating model looked:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#log_mod_rank &lt;- glm(home_win ~ lead_diff + time_elapsed + rating_diff + </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#                       time_elapsed:lead_diff + time_elapsed:rating_diff,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                    data = final_data, family = "binomial")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This model adds <code>rating_diff</code> and the interaction term between <code>time_elapsed</code> and <code>rating_diff</code>. Now the model is ready to be visualized with a predicted win probability plot that shows how win probability of the home team changes throughout the game.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(preds_log_mod_rank, aes(x = time_elapsed, y = predicted, </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#                         color = factor(lead_diff))) +</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = factor(lead_diff)),</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>   <span class="co">#           alpha = 0.25, color = NA) +</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_line(linewidth = 1.5) +</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a> <span class="co"># scale_colour_viridis_d(option = "D") +</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_fill_viridis_d(option = "D") +</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  labs(x = "Time Elapsed (seconds)", </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a> <span class="co">#      y = "Predicted Home Win Probability",</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     color = "Lead Diff", </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    fill = "Lead Diff",</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   title = "Logistic Regression") +</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We can see that the win probability for the home team is shifted __ at the start of the game compared to the previous model. Also we see that both models produce similarly shaped regression lines that are more similar towards the end of the game.</p>
 </section>
 </section>
 <section id="bayesian-logistic-regression-model" class="level1">
 <h1>Bayesian Logistic Regression Model</h1>
+<p>Bayesian statistics is this… From the research paper I learned…</p>
+<p>Moving on to the Bayesian Logistic Regression model. Here is what the model code looked like:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#brm_mod_rank &lt;- brm(home_win ~ lead_scaled + time_scaled + rating_scaled + #time_scaled:lead_scaled + time_scaled:rating_scaled,</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#                   data = subset_games,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                  family = bernoulli(),</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>   <span class="co">#                 prior = c(prior(normal(0, 4), class = "Intercept"))</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>There was initially an issue with running this model, it wouldn’t run on my computer as it couldn’t train the model quickly enough. So to make the model run quicker I scaled all three of the predictor variables. Also I had to run the model on a HPC (high performance computing), so that I could run the model overnight. Once the model finally finished running on the training data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(preds_brm_mod_rank_scaled, aes(x = time_elapsed, y = predicted, </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#                         color = factor(lead_diff))) +</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_ribbon(aes(ymin = lower, ymax = upper, fill = factor(lead_diff)),</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>   <span class="co">#           alpha = 0.25, color = NA) +</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_line(linewidth = 1.5) +</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a> <span class="co"># scale_colour_viridis_d(option = "D") +</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_fill_viridis_d(option = "D") +</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  labs(x = "Time Elapsed (seconds)", </span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a> <span class="co">#      y = "Predicted Home Win Probability",</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     color = "Lead Diff", </span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    fill = "Lead Diff",</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   title = "Bayesian Logistic") +</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Compared to the frequentist logistic regression models, the bayesian model compares very similar to the model that had the <code>rating_diff</code> variable. This means the prior didn’t add much to the model.</p>
 </section>
 <section id="adding-home-court-advantage-to-both-models" class="level1">
 <h1>Adding Home Court Advantage to Both Models</h1>
+<p>The next thing I wanted to try with the logistic models is incorporating a natural home court advantage into them. From TeamRankings they say that when a team plays at home they should get a +3.3 to their rating. Then I had to create a variable for neutral site games, so some games the home team gets the + 3.3 and other games neither team get a home court advantage. Here is how this change affected the regression plot.</p>
+<p>…</p>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>

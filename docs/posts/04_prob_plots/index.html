@@ -25,6 +25,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -160,18 +195,103 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
+<p>With five different models trained on the 2025 season play-by-play data, the next stage of the project focused on visualization. While model performance metrics provide one way to evaluate a win probability model, visualizing predictions throughout an individual game offers a more intuitive way to understand how each model responds to changes in game state.</p>
+<p>The primary goal of this stage was to apply the trained models to individual games from the 2026 NCAA men’s basketball season and create predicted win probability plots. These plots track how a team’s probability of winning changes throughout a game and serve as the foundation for the storytelling component of the project.</p>
 </section>
-<section id="train-models-on-2025-data-then-plot-on-2026-game" class="level1">
-<h1>Train models on 2025 Data then plot on 2026 game</h1>
+<section id="finding-case-study-games" class="level1">
+<h1>Finding Case Study Games</h1>
+<p>Before creating the visualizations, I needed to identify games that would provide interesting case studies. Rather than selecting games with straightforward outcomes, I looked for games that featured large momentum swings, frequent lead changes, or high stakes.</p>
+<p>Three games were selected for further analysis:</p>
+<ol type="1">
+<li><p><strong>Duke vs.&nbsp;UConn (Elite Eight)</strong> – This NCAA Tournament game featured one of the largest comebacks of the season. Duke built a 19-point lead in the first half before UConn rallied and won on a buzzer-beating three-pointer. This game provided an opportunity to examine how high Duke’s win probability became despite ultimately losing.</p></li>
+<li><p><strong>Michigan vs.&nbsp;UConn (National Championship)</strong> – As the final game of the season, the national championship was a natural case study. Unlike the Duke vs.&nbsp;UConn matchup, this game remained relatively competitive throughout, allowing the models to be evaluated in a different game environment.</p></li>
+<li><p><strong>Duke vs.&nbsp;Virginia (ACC Championship)</strong> – This game featured 16 lead changes, and neither team led by more than seven points. The constant shifts in momentum made it an ideal candidate for examining how win probability responds to a highly competitive game.</p></li>
+</ol>
+<p>An important characteristic to note is that all three games is that they were played at neutral sites. Although the data designate one team as the home team, neither team actually had home-court advantage. This distinction became important when interpreting model predictions and required additional adjustments for some of the methods later in the project.</p>
 </section>
-<section id="create-function-for-predicted-provability-plots" class="level1">
-<h1>Create Function for Predicted Provability Plots</h1>
+<section id="creating-predicted-win-probability-plots" class="level1">
+<h1>Creating Predicted Win Probability Plots</h1>
+<p>To simplify the process of generating visualizations, I created a function that could apply any of the five models to a selected game. Given a game’s play-by-play data and a specified model, the function returned a dataset containing predicted win probabilities at each second of game time.</p>
+<p>This approach made it possible to compare models across multiple games without rewriting prediction code for each analysis. Once predictions were generated, they could be visualized using similar plotting code.</p>
+<p>The examples below illustrate the types of visualizations produced during this stage of the project.</p>
+<p>The first example shows the national championship game between Michigan and UConn using the MLE method.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(mich_uconn_mle, aes(x = time_elapsed, y = win_prob)) +</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_line() +</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_hline(yintercept = 0.5, linetype = "dashed", color = "gray") +</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a> <span class="co"># scale_y_continuous(limits = c(0, 1)) +</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#labs(x = "Time Elapsed (seconds)",</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    y = "Predicted Home Win Probability",</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   title = "Michigan vs UConn - MLE") +</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The second example shows Duke vs.&nbsp;Virginia using the frequentist logistic regression model without team ratings.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(duke_va_log, aes(x = time_elapsed, y = win_prob)) +</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_line() +</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_hline(yintercept = 0.5, linetype = "dashed", color = "gray") +</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a> <span class="co"># scale_y_continuous(limits = c(0, 1)) +</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#labs(x = "Time Elapsed (seconds)",</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    y = "Predicted Home Win Probability",</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   title = "Duke vs Virginia - Logistic w/o Rating") +</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The final example shows Duke vs.&nbsp;UConn using the Bayesian logistic regression model.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(duke_uconn_brm, aes(x = time_elapsed, y = win_prob)) +</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_line() +</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_hline(yintercept = 0.5, linetype = "dashed", color = "gray") +</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a> <span class="co"># scale_y_continuous(limits = c(0, 1)) +</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#labs(x = "Time Elapsed (seconds)",</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    y = "Predicted Home Win Probability",</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   title = "Duke vs UConn - Bayesian Logistic") +</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Although the models differ in how they estimate win probability, the resulting visualizations share a common interpretation. As the score and game situation change, the predicted probability of victory updates continuously. These plots provide a detailed view of momentum shifts and critical turning points that are often lost when looking only at the final score.</p>
 </section>
-<section id="mle-and-dynamic-bayes-probability-plots-for-neutral-sites" class="level1">
-<h1>MLE and Dynamic Bayes Probability Plots for Neutral Sites</h1>
+<section id="adjusting-mle-and-dynamic-bayes-for-neutral-site-games" class="level1">
+<h1>Adjusting MLE and Dynamic Bayes for Neutral-Site Games</h1>
+<p>Lets go back to topic of these games actually being at neutral sites, but one team is denoted as the home team by the data and model. As we saw in the Michigan vs.&nbsp;UConn - MLE predicted probability plot, Michigan’s win probability starts above 50% since they are considered the home team. But when played at a neutral site, and since the MLE method only considered time and score the win probability of both teams should be equal.</p>
+<p>Lets use the Michigan vs.&nbsp;UConn game to explain how I fixed this issue. First you assume Michigan as the home team which we already have, when you assume UConn as the home team and you do this by flipping the sign of <code>lead_diff</code>. Then you combine the two different datasets and use this formula to get the win probability of a neutral site game, win_prob_neutral = (win_prob_A + (1 - win_prob_B)) / 2.</p>
+<p>The logistic regression models included team strength information through the rating_diff variable, which naturally accounts for differences between teams before the game begins. The MLE and Dynamic Bayes methods, however, rely only on score differential and game time.</p>
+<p>As a result, when a team is designated as the home team, these methods assign that team a slight advantage at the start of the game because historically home teams win more often than away teams. For neutral site games, this behavior is unwanted because neither team should have an pre-game advantage before play begins.</p>
+<p>This issue was particularly noticeable in the Michigan versus UConn national championship game. When Michigan was treated as the home team, the win probability at the start of the game was greater than 50%, despite the game being played at a neutral site.</p>
+<p>To address this issue, each game was evaluated twice. The first version treated Team A as the home team, while the second version treated Team B as the home team by reversing the sign of the score differential. The two resulting probability estimates were then combined into a single neutral-site estimate by averaging the probability for Team A with the complement of Team B’s probability.</p>
+<p>This procedure removes the historical home-court advantage embedded within the MLE and Dynamic Bayes methods and ensures that neutral-site games begin at exactly a 50% win probability.</p>
+<p>The updated MLE visualization for the Michigan versus UConn national championship game is shown below.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(mich_uconn_mle_neutral, aes(x = time_elapsed, y = win_prob_neutral)) +</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  geom_line(linewidth = 0.4) +</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_x_continuous(breaks = seq(0, 2400, by = 300)) +</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  scale_y_continuous(limits = c(0, 1)) +</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a> <span class="co"># labs(title = "Michigan vs UConn MLE Win Probability",</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     x = "Time Elapsed (seconds)",</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    y = "Predicted Win Probability (Michigan)") +</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme_minimal(base_size = 14)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The same adjustment was applied to the Dynamic Bayes method.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(duke_uconn_db_neutral, aes(x = time_elapsed, y = win_prob_neutral)) +</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_line(linewidth = 0.4) +</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  scale_x_continuous(breaks = seq(0, 2400, by = 300)) +</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a> <span class="co"># scale_y_continuous(limits = c(0, 1)) +</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#labs(title = "Duke vs UConn Dynamic Bayes Win Probability",</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>   <span class="co">#    x = "Time Elapsed (seconds)",</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   y = "Predicted Win Probability (Duke)") +</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  theme_minimal(base_size = 14)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>After the adjustment, both methods produced win probability curves that began at 50% and evolved solely according to the game state. This provided a more appropriate representation of neutral-site postseason games and improved the interpretability of the visualizations.</p>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
+<p>This post marks the transition from model development to visualization. The trained models were applied to individual games, transforming statistical predictions into win probability plots that illustrate how a team’s chances of winning change throughout a game.</p>
+<p>These visualizations reveal aspects of a game that are not captured by the final score alone. Large comebacks, momentum shifts, and critical possessions become visible through changes in predicted win probability, providing a richer view of how games unfold over time.</p>
+<p>The next stage of the project focuses on learning the Quarto <code>Closeread</code> extension. These win probability plots become a central component of the storytelling process, allowing statistical analysis and narrative explanation to be combined into an interactive presentation of a basketball game.</p>
 
 
 </section>
