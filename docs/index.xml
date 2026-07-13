@@ -23,6 +23,7 @@
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
+<p><strong>Post 1</strong></p>
 <p>This project was motivated by the question:</p>
 <blockquote class="blockquote">
 <p>How can in-game win probability be estimated and visualized throughout NCAA men’s basketball games to support data-driven storytelling?</p>
@@ -142,6 +143,7 @@ font-style: inherit;">#        lead_diff = home_score - away_score)</span></span
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
+<p><strong>Post 3</strong></p>
 <p>While developing the Frequentist and Bayesian logistic regression models, I also explored a different approach based on the methods presented in <em>Bayesian Estimation of In-Game Home Team Win Probability for College Basketball.</em> Unlike logistic regression, which estimates win probability through a statistical model fitted to predictor variables, these methods estimate win probability directly from historical game outcomes.</p>
 <p>The two approaches examined were the <strong>Maximum Likelihood Estimation (MLE)</strong> method and the <strong>Dynamic Bayes</strong> method. Both methods use historical combinations of game time and score differential to estimate the probability that the home team will ultimately win. One of the goals of this stage of the project was to determine whether these methods would produce results similar to those reported in the research paper when trained using only a single season of NCAA men’s basketball data.</p>
 </section>
@@ -276,6 +278,7 @@ font-style: inherit;"># theme_minimal()</span></span></code></pre></div></div>
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
+<p><strong>Post 4</strong></p>
 <p>With five different models trained on the 2025 season play-by-play data, the next stage of the project focused on visualization. While model performance metrics provide one way to evaluate a win probability model, visualizing predictions throughout an individual game offers a more intuitive way to understand how each model responds to changes in game state.</p>
 <p>The primary goal of this stage was to apply the trained models to individual games from the 2026 NCAA men’s basketball season and create predicted win probability plots. These plots track how a team’s probability of winning changes throughout a game and serve as the foundation for the storytelling component of the project.</p>
 </section>
@@ -484,7 +487,9 @@ font-style: inherit;">#  theme_minimal(base_size = 14)</span></span></code></pre
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>After attaining the final dataset by completing the data collection and data cleaning portions of my project. I’m ready to start the modeling portions of my project. After reading through this research paper, <em>A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball.</em> I realized I should start with a frequentist logistic regression model because I have seen this in my coursework before, and then I can try a bayesian logistic regression model based on what I learned from the research paper.</p>
+<p><strong>Post 2</strong></p>
+<p>After attaining the final dataset by completing the data collection and data cleaning portions of my project. I’m ready to start the modeling portions of my project. After reading through this research paper, <em>A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball.</em></p>
+<p>I realized I should start with a frequentist logistic regression model because I have seen this in my coursework before, and then I can try a bayesian logistic regression model based on what I learned from the research paper.</p>
 </section>
 <section id="frequentist-logistic-regression-model" class="level1">
 <h1>Frequentist Logistic Regression Model</h1>
@@ -674,9 +679,9 @@ font-style: inherit;">#  theme_minimal()</span></span></code></pre></div></div>
       <!-- user-provided yaml closeread style options -->
       <style>
         :root {
-          --cr-narrative-text-color-sidebar: black;
---cr-narrative-background-color-sidebar: #009CDE;
+          --cr-narrative-background-color-sidebar: #009CDE;
 --cr-section-background-color: #009CDE;
+--cr-narrative-text-color-sidebar: black;
         }
       </style>
     
@@ -706,7 +711,7 @@ font-style: inherit;">#  theme_minimal()</span></span></code></pre></div></div>
 <p><span class="cr-bubble">The first feature I explored was the basic Closeread layout. As the reader scrolls through the document, the narrative text changes while the visualization remains fixed on the screen. This creates a stronger connection between the written explanation and the figure being discussed.</span></p>
 </div>
 </div>
-<div class="trigger new-trigger" data-scale-by="2.5" data-focus-on="cr-game-plot-01" data-pan-to="0%,70%">
+<div class="trigger new-trigger" data-pan-to="0%,70%" data-scale-by="2.5" data-focus-on="cr-game-plot-01">
 <div class="narrative">
 <p><span class="cr-bubble">Another feature I tested was the ability to zoom into specific regions of a visualization. Using the <code>pan-to</code> and <code>scale-by</code> options, the document can automatically focus on an area of interest. This allows a reader’s attention to be directed toward a specific event or pattern without requiring them to interpret the entire graphic at once.</span> </p>
 </div>

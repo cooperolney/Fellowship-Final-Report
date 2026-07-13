@@ -3,18 +3,97 @@ title: "Learning the Closeread Extension"
 author: "Cooper Olney"
 date: "2026-07-09"
 categories: [Visualizations]
+format:
+  closeread-html:
+    css: closeread_test.css
+    cr-style:
+      section-background-color: "#009CDE"
+      narrative-background-color-sidebar: "#009CDE"
+      narrative-text-color-sidebar: black
 ---
+
+```{r}
+#| include: false
+library(tidyverse)
+duke_uconn_db <- read_csv("duke_uconn_db.csv")
+
+plot_duke_uconn <- ggplot(duke_uconn_db, aes(x = time_elapsed, y = win_prob)) +
+  geom_line(linewidth = 0.4) +
+  geom_hline(yintercept = 0.5, linetype = "dashed", color = "gray") +
+  geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +
+  scale_x_continuous(breaks = seq(0, 2400, by = 300)) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(title = "Closeread Demonstration",
+       x = "Time Elapsed (seconds)",
+       y = "Predicted Home Win Probability (Duke)") +
+  theme_minimal(base_size = 14)
+```
 
 # Introduction
 
+**Post 5**
+
+Continuing the visualization stage of the project, the next step was learning how to use the Quarto **Closeread** extension. Closeread is a custom Quarto format that supports scrollytelling, a style of presentation where narrative text and visualizations are linked together as the reader moves through a document.
+
+The goal of this stage was not to analyze basketball games directly, but rather to develop the tools needed to communicate the results of the project effectively. Before creating a final polished presentation, I first needed to understand the features available in Closeread and experiment with different design choices. This process involved building a test document, exploring interactive features, and using custom CSS styling to improve the overall appearance and usability of the final product.
 
 
-# Closeread Functions
+# Learning the Closeread Framework
+One of the defining features of Closeread is its ability to synchronize text and visualizations. As a reader scrolls through the page, explanatory text appears on one side of the screen while plots, images, or other visual elements remain visible on the other side.
+
+Unlike a traditional report where figures are placed between blocks of text, Closeread allows visualizations to remain fixed while the narrative changes. This structure encourages readers to focus on specific aspects of a plot as they progress through the document and creates a more interactive reading experience.
+
+To learn how this framework operates, I experimented with the core Closeread components, including sections and sticky elements. These features control how text and visualizations are displayed throughout the document and form the foundation of the scrollytelling experience.
 
 
+:::{.case-study-intro}
+The following example demonstrates several of the features that I experimented with while learning the Closeread extension. The win probability plot is included only as a sample visualization and is used to illustrate how narrative text and graphics can interact within a scrollytelling document.
+:::
 
-# CSS
+:::{.cr-section}
 
+[The first feature I explored was the basic Closeread layout. As the reader scrolls through the document, the narrative text changes while the visualization remains fixed on the screen. This creates a stronger connection between the written explanation and the figure being discussed.]{.cr-bubble} @cr-game-plot-01
+
+[Another feature I tested was the ability to zoom into specific regions of a visualization. Using the `pan-to` and `scale-by` options, the document can automatically focus on an area of interest. This allows a reader's attention to be directed toward a specific event or pattern without requiring them to interpret the entire graphic at once.]{.cr-bubble}
+[@cr-game-plot-01]{pan-to="0%,70%" scale-by="2.5"}
+
+
+[The final step is returning to the full visualization. This transition restores the broader context of the plot and allows the reader to connect the highlighted region back to the overall game. When the plot returns to its original view, the picture-in-picture display is no longer needed and disappears automatically.]{.cr-bubble} @cr-game-plot-01
+
+:::{#cr-game-plot-01}
+```{r}
+#| echo: false
+#| warning: false
+plot_duke_uconn
+```
+
+:::
+
+:::{.cr-minimap-float}
+
+```{r}
+#| echo: false
+#| warning: false
+plot_duke_uconn + theme(labs(title=NULL, x=NULL, y=NULL))
+```
+
+:::
+
+:::
+
+
+# Interactive Features and CSS Customization
+A major focus of the test document was understanding how Closeread can transform a static visualization into a more interactive experience. The demonstration above illustrates two features that were particularly useful: **pan-to** and **scale-by**. Together, these tools allow a document to zoom into selected regions of a figure and direct the reader's attention toward specific details.
+
+In addition to Closeread's built-in functionality, I experimented with custom CSS styling to improve the presentation of the document. Initial modifications included adding borders around visualizations, adjusting spacing, and creating colored text containers to improve readability and visual contrast.
+
+The most advanced customization was the picture-in-picture feature displayed during the zoomed view above. When a plot is enlarged, readers can lose sight of the broader context of the visualization. To address this issue, a miniature version of the full plot appears in the corner of the screen while the zoom is active. This allows readers to maintain awareness of where the zoomed region is located within the complete figure. Once the document transitions away from the zoomed section, the miniature plot automatically disappears.
 
 
 # Conclusion
+This post documented the process of learning the Quarto Closeread extension and exploring the interactive features that support data-driven storytelling. Through experimentation with scrolling interactions, visualization transitions, and custom CSS styling, I developed a framework for presenting win probability analysis in a more engaging and accessible format.
+
+An important takeaway from this stage of the project was that effective data storytelling requires more than accurate statistical models. While previous stages focused on collecting data, developing models, and generating win probability estimates, this phase emphasized how those results could be communicated to an audience. Features such as guided scrolling, interactive zooming, and custom visual design demonstrated how presentation choices can help readers better understand and engage with statistical analyses.
+
+The following post serves as the culmination of the project. Unlike the previous posts, which focused on methodology, modeling, and development, the final Closeread document is a polished presentation of the 2026 NCAA Men's Basketball National Championship game. It applies the techniques developed throughout the project to create an interactive narrative centered on the changing win probability throughout the game.
+

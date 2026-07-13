@@ -6,7 +6,12 @@ categories: [Modeling]
 ---
 
 # Introduction
-After attaining the final dataset by completing the data collection and data cleaning portions of my project. I'm ready to start the modeling portions of my project. After reading through this research paper, *A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball.* I realized I should start with a frequentist logistic regression model because I have seen this in my coursework before, and then I can try a bayesian logistic regression model based on what I learned from the research paper. 
+
+**Post 2**
+
+After attaining the final dataset by completing the data collection and data cleaning portions of my project. I'm ready to start the modeling portions of my project. After reading through this research paper, *A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball.* 
+
+I realized I should start with a frequentist logistic regression model because I have seen this in my coursework before, and then I can try a bayesian logistic regression model based on what I learned from the research paper. 
 
 
 # Frequentist Logistic Regression Model

@@ -6,6 +6,9 @@ categories: [Data]
 ---
 
 # Introduction
+
+**Post 1**
+
 This project was motivated by the question: 
 
 > How can in-game win probability be estimated and visualized throughout NCAA men's basketball games to support data-driven storytelling?
