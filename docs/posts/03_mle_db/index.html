@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Cooper Olney">
-<meta name="dcterms.date" content="2026-07-09">
+<meta name="dcterms.date" content="2026-07-11">
 
-<title>MLE &amp; Dynamic Bayes Models – Visualizing In-Game Win Probability in College Basketball Through Data Storytelling</title>
+<title>MLE &amp; Dynamic Bayes Models – Modeling and Visualizing In-Game Win Probability in NCAA Men’s Basketball</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -24,41 +24,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -149,7 +114,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">Visualizing In-Game Win Probability in College Basketball Through Data Storytelling</span>
+    <span class="navbar-title">Modeling and Visualizing In-Game Win Probability in NCAA Men’s Basketball</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -203,7 +168,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">July 9, 2026</p>
+        <p class="date">July 11, 2026</p>
       </div>
     </div>
     
@@ -236,7 +201,7 @@ window.Quarto = {
 <li><p>The number of those games that resulted in a home-team victory.</p></li>
 </ol>
 <p>The estimated win probability is then calculated as:</p>
-<p><span class="math inline">\(P(Home Win) = HomeTeam Wins / Total Games\)</span></p>
+<p><span class="math inline">\(P(Home\ Win) = Home\ Team\ Wins / Total\ Games\)</span></p>
 <p>For example, if 100 games reached a state where the home team led by 5 points with 10 minutes remaining and the home team ultimately won 75 of those games, the estimated win probability for that game state would be 0.75.</p>
 <p>This approach is intuitive because it relies entirely on observed historical outcomes. However, its accuracy depends heavily on the amount of available data. Some combinations of time and score occur frequently, while others occur only a handful of times throughout a season.</p>
 </section>
@@ -244,17 +209,17 @@ window.Quarto = {
 <h1>MLE Heatmap</h1>
 <p>One motivation for implementing the MLE method was to compare my results with those presented in the research paper. Although the paper used multiple seasons of data, I wanted to determine whether a similar win probability surface could be produced using only the 2025 season data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(mle_heatmap_clean, aes(x = time_elapsed, y = lead_diff, fill = win_prob)) +</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_tile() +</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_fill_gradientn(colors = c("blue", "green", "white", "yellow", "red")) +</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  labs(x = "Time elapsed", </span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a> <span class="co">#      y = "Score diff",</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     fill = "p") +</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 <p>The heatmap displays win probability across combinations of elapsed time and score differential. The x-axis represents time elapsed, while the y-axis represents the home team’s lead. Red regions correspond to game states where the home team is highly likely to win, while blue regions represent situations where the home team is unlikely to win.</p>
 <p>The overall structure of the heatmap aligned with expectations. As the home team’s lead increased, win probability generally increased as well. Similarly, score differential became more influential as the game progressed and less time remained for a comeback.</p>
-<p>However, several isolated regions displayed unexpectedly high or low win probabilities. For example, some score deficits early in games were associated with unusually high home-team win probabilities. These values were caused by sparse data, where only a small number of historical observations existed for a particular game state. Since the MLE method relies entirely on observed occurences, rare combinations can produce unstable estimates.</p>
+<p>However, several isolated regions displayed unexpectedly high or low win probabilities. For example, some score deficits early in games were associated with unusually high home-team win probabilities. These values were caused by sparse data, where only a small number of historical observations existed for a particular game state. Since the MLE method relies entirely on observed occurrences, rare combinations can produce unstable estimates.</p>
 <p>This behavior was also evident in the heatmaps presented in the research paper. Although the overall shape of the probability surface was reasonable, isolated regions with unexpected values remained due to limited observations in certain game states.</p>
 </section>
 <section id="dynamic-bayes-method-calculation" class="level1">
@@ -265,13 +230,13 @@ window.Quarto = {
 <p>The second modification is the introduction of a dynamic Beta prior. In Bayesian statistics, a Beta distribution can be interpreted as representing prior observations before any actual data are observed. If a prior is specified as Beta(α,β), then α represents prior successes and β represents prior failures.</p>
 <p>The Dynamic Bayes method uses seven possible priors:</p>
 <ul>
-<li>Beta(19, 1)</li>
-<li>Beta(9, 1)</li>
-<li>Beta(4, 1)</li>
-<li>Beta(1, 1)</li>
-<li>Beta(1, 4)</li>
-<li>Beta(1, 9)</li>
-<li>Beta(1, 19)</li>
+<li>Beta(19,1)</li>
+<li>Beta(9,1)</li>
+<li>Beta(4,1)</li>
+<li>Beta(1,1)</li>
+<li>Beta(1,4)</li>
+<li>Beta(1,9)</li>
+<li>Beta(1,19)</li>
 </ul>
 <p>The prior selected depends on the current game situation. Large leads late in games receive stronger priors favoring the leading team, while close games receive weaker and more neutral priors. This dynamic structure helps stabilize estimates when historical observations are limited.</p>
 <p>Together, the windowing procedure and the Bayesian prior reduce the volatility observed in the MLE estimates. The windows increase the effective sample size, while the prior prevents extreme probabilities from occurring solely because of a small number of observations.</p>
@@ -282,15 +247,13 @@ window.Quarto = {
 <p>An initial challenge was computational. Running the Dynamic Bayes method on an entire season of second-by-second play-by-play data required substantially more processing time than any of the previous models. Early testing was therefore performed on a subset of approximately 50 games. While the method worked as expected, the resulting heatmap contained many empty regions because certain game states were not represented in the smaller sample.</p>
 <p>After gaining access to a high-performance computing (HPC) system, I was able to run the method on the complete season dataset.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot(db_full, aes(x = time_elapsed, y = lead_diff, fill = win_prob)) +</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_tile() +</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_fill_gradientn(colors = c("blue", "green", "white", "yellow", "red")) +</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  labs(</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a> <span class="co">#   x = "Time elapsed (seconds)", </span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  y = "Score differential",</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>   <span class="co"># fill = "p"</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  ) +</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a> <span class="co"># theme_minimal()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 <p>The resulting heatmap closely matched the patterns reported in the research paper. The overall probability surface appeared smoother than the MLE heatmap, and the isolated regions with unrealistic probabilities were largely eliminated.</p>
 <p>The benefits of the windowing approach were particularly apparent in rare game states. By incorporating information from nearby observations and combining it with a Bayesian prior, the Dynamic Bayes method produced more stable and interpretable win probability estimates across the entire game state space.</p>

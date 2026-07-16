@@ -1,11 +1,33 @@
 ---
 title: "Predicted Probability Plots"
 author: "Cooper Olney"
-date: "2026-07-09"
+date: "2026-07-12"
 categories: [Visualizations]
 ---
 
 # Introduction
+
+```{r}
+#| include: false
+
+library(here)
+
+# chunk 1
+mich_uconn_mle_plot <- readRDS(here("data", "mich_uconn_mle_plot.rds"))
+
+# chunk 2
+duke_va_log_plot <-  readRDS(here("data", "duke_va_log_plot.rds"))
+
+
+# chunk 3
+duke_uconn_brm_plot <- readRDS(here("data", "duke_uconn_brm_plot.rds"))
+
+# chunk 4
+mich_uconn_mle_neutral_plot <- readRDS(here("data", "mich_uconn_mle_neutral_plot.rds"))
+
+# chunk 5
+duke_uconn_db_neutral_plot <- readRDS(here("data", "duke_uconn_db_neutral_plot.rds"))
+```
 
 **Post 4**
 
@@ -25,10 +47,10 @@ Three games were selected for further analysis:
 
 3. **Duke vs. Virginia (ACC Championship)** – This game featured 16 lead changes, and neither team led by more than seven points. The constant shifts in momentum made it an ideal candidate for examining how win probability responds to a highly competitive game.
 
-An important characteristic to note is that all three games is that they were played at neutral sites. Although the data designate one team as the home team, neither team actually had home-court advantage. This distinction became important when interpreting model predictions and required additional adjustments for some of the methods later in the project.
+An important characteristic to note is that all three games were played at neutral sites. Although the data designates one team as the home team, no team actually had home-court advantage. This distinction became important when interpreting model predictions and required additional adjustments for some of the methods later in the project.
 
 # Creating Predicted Win Probability Plots
-To simplify the process of generating visualizations, I created a function that could apply any of the five models to a selected game. Given a game's play-by-play data and a specified model, the function returned a dataset containing predicted win probabilities at each second of game time.
+To simplify the process of generating visualizations, I created a function that could apply any of the five models to any selected game. Given a game's `game_id` and a specified model, the function returned a dataset containing predicted win probabilities at each second of game time.
 
 This approach made it possible to compare models across multiple games without rewriting prediction code for each analysis. Once predictions were generated, they could be visualized using similar plotting code.
 
@@ -37,55 +59,35 @@ The examples below illustrate the types of visualizations produced during this s
 The first example shows the national championship game between Michigan and UConn using the MLE method.
 
 ```{r}
-#ggplot(mich_uconn_mle, aes(x = time_elapsed, y = win_prob)) +
- # geom_line() +
-  #geom_hline(yintercept = 0.5, linetype = "dashed", color = "gray") +
-#  geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +
- # scale_y_continuous(limits = c(0, 1)) +
-  #labs(x = "Time Elapsed (seconds)",
-   #    y = "Predicted Home Win Probability",
-    #   title = "Michigan vs UConn - MLE") +
-#  theme_minimal()
+#| echo: false
+#| warning: false
+
+mich_uconn_mle_plot
 ```
 
 The second example shows Duke vs. Virginia using the frequentist logistic regression model without team ratings.
 
 ```{r}
-#ggplot(duke_va_log, aes(x = time_elapsed, y = win_prob)) +
- # geom_line() +
-  #geom_hline(yintercept = 0.5, linetype = "dashed", color = "gray") +
-#  geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +
- # scale_y_continuous(limits = c(0, 1)) +
-  #labs(x = "Time Elapsed (seconds)",
-   #    y = "Predicted Home Win Probability",
-    #   title = "Duke vs Virginia - Logistic w/o Rating") +
-#  theme_minimal()
+#| echo: false
+#| warning: false
+
+duke_va_log_plot
 ```
 
 The final example shows Duke vs. UConn using the Bayesian logistic regression model.
 
 ```{r}
-#ggplot(duke_uconn_brm, aes(x = time_elapsed, y = win_prob)) +
- # geom_line() +
-  #geom_hline(yintercept = 0.5, linetype = "dashed", color = "gray") +
-#  geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +
- # scale_y_continuous(limits = c(0, 1)) +
-  #labs(x = "Time Elapsed (seconds)",
-   #    y = "Predicted Home Win Probability",
-    #   title = "Duke vs UConn - Bayesian Logistic") +
-#  theme_minimal()
+#| echo: false
+#| warning: false
+
+duke_uconn_brm_plot
 ```
 
 Although the models differ in how they estimate win probability, the resulting visualizations share a common interpretation. As the score and game situation change, the predicted probability of victory updates continuously. These plots provide a detailed view of momentum shifts and critical turning points that are often lost when looking only at the final score.
 
 
 # Adjusting MLE and Dynamic Bayes for Neutral-Site Games
-Lets go back to topic of these games actually being at neutral sites, but one team is denoted as the home team by the data and model. As we saw in the Michigan vs. UConn - MLE predicted probability plot, Michigan's win probability starts above 50% since they are considered the home team. But when played at a neutral site, and since the MLE method only considered time and score the win probability of both teams should be equal.
-
-Lets use the Michigan vs. UConn game to explain how I fixed this issue. First you assume Michigan as the home team which we already have, when you assume UConn as the home team and you do this by flipping the sign of `lead_diff`. Then you combine the two different datasets and use this formula to get the win probability of a neutral site game, win_prob_neutral = (win_prob_A + (1 - win_prob_B)) / 2.
-
-
-The logistic regression models included team strength information through the rating_diff variable, which naturally accounts for differences between teams before the game begins. The MLE and Dynamic Bayes methods, however, rely only on score differential and game time.
+The logistic regression models included team strength information through the `rating_diff` variable, which accounts for differences between teams before the game begins. The MLE and Dynamic Bayes methods, however, rely only on score differential and game time.
 
 As a result, when a team is designated as the home team, these methods assign that team a slight advantage at the start of the game because historically home teams win more often than away teams. For neutral site games, this behavior is unwanted because neither team should have an pre-game advantage before play begins.
 
@@ -98,29 +100,19 @@ This procedure removes the historical home-court advantage embedded within the M
 The updated MLE visualization for the Michigan versus UConn national championship game is shown below.
 
 ```{r}
-#ggplot(mich_uconn_mle_neutral, aes(x = time_elapsed, y = win_prob_neutral)) +
-#  geom_line(linewidth = 0.4) +
- # geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +
-  #scale_x_continuous(breaks = seq(0, 2400, by = 300)) +
-#  scale_y_continuous(limits = c(0, 1)) +
- # labs(title = "Michigan vs UConn MLE Win Probability",
-  #     x = "Time Elapsed (seconds)",
-   #    y = "Predicted Win Probability (Michigan)") +
-#  theme_minimal(base_size = 14)
+#| echo: false
+#| warning: false
+
+mich_uconn_mle_neutral_plot
 ```
 
 The same adjustment was applied to the Dynamic Bayes method.
 
 ```{r}
-#ggplot(duke_uconn_db_neutral, aes(x = time_elapsed, y = win_prob_neutral)) +
- # geom_line(linewidth = 0.4) +
-  #geom_vline(xintercept = 1200, linetype = "dashed", color = "gray") +
-#  scale_x_continuous(breaks = seq(0, 2400, by = 300)) +
- # scale_y_continuous(limits = c(0, 1)) +
-  #labs(title = "Duke vs UConn Dynamic Bayes Win Probability",
-   #    x = "Time Elapsed (seconds)",
-    #   y = "Predicted Win Probability (Duke)") +
-#  theme_minimal(base_size = 14)
+#| echo: false
+#| warning: false
+
+duke_uconn_db_neutral_plot
 ```
 
 After the adjustment, both methods produced win probability curves that began at 50% and evolved solely according to the game state. This provided a more appropriate representation of neutral-site postseason games and improved the interpretability of the visualizations.

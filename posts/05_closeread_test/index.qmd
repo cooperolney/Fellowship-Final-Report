@@ -1,10 +1,11 @@
 ---
 title: "Learning the Closeread Extension"
 author: "Cooper Olney"
-date: "2026-07-09"
+date: "2026-07-13"
 categories: [Visualizations]
 format:
   closeread-html:
+    theme: yeti
     css: closeread_test.css
     cr-style:
       section-background-color: "#009CDE"
@@ -41,7 +42,7 @@ The goal of this stage was not to analyze basketball games directly, but rather 
 # Learning the Closeread Framework
 One of the defining features of Closeread is its ability to synchronize text and visualizations. As a reader scrolls through the page, explanatory text appears on one side of the screen while plots, images, or other visual elements remain visible on the other side.
 
-Unlike a traditional report where figures are placed between blocks of text, Closeread allows visualizations to remain fixed while the narrative changes. This structure encourages readers to focus on specific aspects of a plot as they progress through the document and creates a more interactive reading experience.
+Unlike a traditional report where figures are placed between blocks of text, Closeread allows visualizations to remain fixed while the narrative text changes. This structure encourages readers to focus on specific aspects of a plot as they progress through the document and creates a more interactive reading experience.
 
 To learn how this framework operates, I experimented with the core Closeread components, including sections and sticky elements. These features control how text and visualizations are displayed throughout the document and form the foundation of the scrollytelling experience.
 
@@ -95,5 +96,5 @@ This post documented the process of learning the Quarto Closeread extension and 
 
 An important takeaway from this stage of the project was that effective data storytelling requires more than accurate statistical models. While previous stages focused on collecting data, developing models, and generating win probability estimates, this phase emphasized how those results could be communicated to an audience. Features such as guided scrolling, interactive zooming, and custom visual design demonstrated how presentation choices can help readers better understand and engage with statistical analyses.
 
-The following post serves as the culmination of the project. Unlike the previous posts, which focused on methodology, modeling, and development, the final Closeread document is a polished presentation of the 2026 NCAA Men's Basketball National Championship game. It applies the techniques developed throughout the project to create an interactive narrative centered on the changing win probability throughout the game.
+The following post serves as the culmination of the project. Unlike the previous posts, which focused on methodology, modeling, and development. The final Closeread document is a polished presentation of the 2026 NCAA Men's Basketball National Championship game. It applies the techniques developed throughout the project to create an interactive narrative centered on the changing win probability throughout the game.
 

@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Cooper Olney">
-<meta name="dcterms.date" content="2026-07-09">
+<meta name="dcterms.date" content="2026-07-13">
 
-<title>Learning the Closeread Extension – Visualizing In-Game Win Probability in College Basketball Through Data Storytelling</title>
+<title>Learning the Closeread Extension – Modeling and Visualizing In-Game Win Probability in NCAA Men’s Basketball</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -44,7 +44,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-45431c2918bd31147ddb3fa7038bb99f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-03ebed3cc6d9517934d904b30f9ec24d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/intersection-observer-polyfill-1.0.0/intersection-observer.js"></script>
 <script src="../../site_libs/quarto-contrib/scrollama-3.2.0/scrollama.min.js"></script>
 <script src="../../site_libs/quarto-contrib/closeread-0.1.0/closeread.js"></script>
@@ -91,7 +91,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">Visualizing In-Game Win Probability in College Basketball Through Data Storytelling</span>
+    <span class="navbar-title">Modeling and Visualizing In-Game Win Probability in NCAA Men’s Basketball</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -145,7 +145,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">July 9, 2026</p>
+        <p class="date">July 13, 2026</p>
       </div>
     </div>
     
@@ -162,9 +162,9 @@ ul.task-list li input[type="checkbox"] {
       <!-- user-provided yaml closeread style options -->
       <style>
         :root {
-          --cr-narrative-background-color-sidebar: #009CDE;
+          --cr-narrative-text-color-sidebar: black;
 --cr-section-background-color: #009CDE;
---cr-narrative-text-color-sidebar: black;
+--cr-narrative-background-color-sidebar: #009CDE;
         }
       </style>
     
@@ -182,7 +182,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="learning-the-closeread-framework" class="level1">
 <h1>Learning the Closeread Framework</h1>
 <p>One of the defining features of Closeread is its ability to synchronize text and visualizations. As a reader scrolls through the page, explanatory text appears on one side of the screen while plots, images, or other visual elements remain visible on the other side.</p>
-<p>Unlike a traditional report where figures are placed between blocks of text, Closeread allows visualizations to remain fixed while the narrative changes. This structure encourages readers to focus on specific aspects of a plot as they progress through the document and creates a more interactive reading experience.</p>
+<p>Unlike a traditional report where figures are placed between blocks of text, Closeread allows visualizations to remain fixed while the narrative text changes. This structure encourages readers to focus on specific aspects of a plot as they progress through the document and creates a more interactive reading experience.</p>
 <p>To learn how this framework operates, I experimented with the core Closeread components, including sections and sticky elements. These features control how text and visualizations are displayed throughout the document and form the foundation of the scrollytelling experience.</p>
 <div class="case-study-intro">
 <p>The following example demonstrates several of the features that I experimented with while learning the Closeread extension. The win probability plot is included only as a sample visualization and is used to illustrate how narrative text and graphics can interact within a scrollytelling document.</p>
@@ -245,7 +245,7 @@ ul.task-list li input[type="checkbox"] {
 <h1>Conclusion</h1>
 <p>This post documented the process of learning the Quarto Closeread extension and exploring the interactive features that support data-driven storytelling. Through experimentation with scrolling interactions, visualization transitions, and custom CSS styling, I developed a framework for presenting win probability analysis in a more engaging and accessible format.</p>
 <p>An important takeaway from this stage of the project was that effective data storytelling requires more than accurate statistical models. While previous stages focused on collecting data, developing models, and generating win probability estimates, this phase emphasized how those results could be communicated to an audience. Features such as guided scrolling, interactive zooming, and custom visual design demonstrated how presentation choices can help readers better understand and engage with statistical analyses.</p>
-<p>The following post serves as the culmination of the project. Unlike the previous posts, which focused on methodology, modeling, and development, the final Closeread document is a polished presentation of the 2026 NCAA Men’s Basketball National Championship game. It applies the techniques developed throughout the project to create an interactive narrative centered on the changing win probability throughout the game.</p>
+<p>The following post serves as the culmination of the project. Unlike the previous posts, which focused on methodology, modeling, and development. The final Closeread document is a polished presentation of the 2026 NCAA Men’s Basketball National Championship game. It applies the techniques developed throughout the project to create an interactive narrative centered on the changing win probability throughout the game.</p>
 
 
 </section>

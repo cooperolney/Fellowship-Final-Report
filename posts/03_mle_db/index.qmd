@@ -1,11 +1,23 @@
 ---
 title: "MLE & Dynamic Bayes Models"
 author: "Cooper Olney"
-date: "2026-07-09"
+date: "2026-07-11"
 categories: [Modeling]
 ---
 
 # Introduction
+
+```{r}
+#| include: false
+
+library(here)
+
+# chunk 1
+mle_heatmap <- readRDS(here("data", "mle_heatmap_plot.rds"))
+
+# chunk 2
+db_heatmap <- readRDS(here("data", "db_heatmap_plot.rds"))
+```
 
 **Post 3**
 
@@ -23,7 +35,7 @@ The MLE method is the simpler of the two approaches and relies only on game time
 
 The estimated win probability is then calculated as:
 
-$P(Home Win) = HomeTeam Wins / Total Games$
+$P(Home\ Win) = Home\ Team\ Wins / Total\ Games$
 
 For example, if 100 games reached a state where the home team led by 5 points with 10 minutes remaining and the home team ultimately won 75 of those games, the estimated win probability for that game state would be 0.75.
 
@@ -34,20 +46,17 @@ This approach is intuitive because it relies entirely on observed historical out
 One motivation for implementing the MLE method was to compare my results with those presented in the research paper. Although the paper used multiple seasons of data, I wanted to determine whether a similar win probability surface could be produced using only the 2025 season data.
 
 ```{r}
-#ggplot(mle_heatmap_clean, aes(x = time_elapsed, y = lead_diff, fill = win_prob)) +
- # geom_tile() +
-  #scale_fill_gradientn(colors = c("blue", "green", "white", "yellow", "red")) +
-#  labs(x = "Time elapsed", 
- #      y = "Score diff",
-  #     fill = "p") +
-  #theme_minimal()
+#| echo: false
+#| warning: false
+
+print(mle_heatmap)
 ```
 
 The heatmap displays win probability across combinations of elapsed time and score differential. The x-axis represents time elapsed, while the y-axis represents the home team's lead. Red regions correspond to game states where the home team is highly likely to win, while blue regions represent situations where the home team is unlikely to win.
 
 The overall structure of the heatmap aligned with expectations. As the home team's lead increased, win probability generally increased as well. Similarly, score differential became more influential as the game progressed and less time remained for a comeback.
 
-However, several isolated regions displayed unexpectedly high or low win probabilities. For example, some score deficits early in games were associated with unusually high home-team win probabilities. These values were caused by sparse data, where only a small number of historical observations existed for a particular game state. Since the MLE method relies entirely on observed occurences, rare combinations can produce unstable estimates.
+However, several isolated regions displayed unexpectedly high or low win probabilities. For example, some score deficits early in games were associated with unusually high home-team win probabilities. These values were caused by sparse data, where only a small number of historical observations existed for a particular game state. Since the MLE method relies entirely on observed occurrences, rare combinations can produce unstable estimates.
 
 This behavior was also evident in the heatmaps presented in the research paper. Although the overall shape of the probability surface was reasonable, isolated regions with unexpected values remained due to limited observations in certain game states.
 
@@ -62,13 +71,13 @@ The second modification is the introduction of a dynamic Beta prior. In Bayesian
 
 The Dynamic Bayes method uses seven possible priors:
 
-- Beta(19, 1)
-- Beta(9, 1)
-- Beta(4, 1)
-- Beta(1, 1)
-- Beta(1, 4)
-- Beta(1, 9)
-- Beta(1, 19)
+- Beta(19,1)
+- Beta(9,1)
+- Beta(4,1)
+- Beta(1,1)
+- Beta(1,4)
+- Beta(1,9)
+- Beta(1,19)
 
 The prior selected depends on the current game situation. Large leads late in games receive stronger priors favoring the leading team, while close games receive weaker and more neutral priors. This dynamic structure helps stabilize estimates when historical observations are limited.
 
@@ -82,15 +91,10 @@ An initial challenge was computational. Running the Dynamic Bayes method on an e
 After gaining access to a high-performance computing (HPC) system, I was able to run the method on the complete season dataset.
 
 ```{r}
-#ggplot(db_full, aes(x = time_elapsed, y = lead_diff, fill = win_prob)) +
- # geom_tile() +
-  #scale_fill_gradientn(colors = c("blue", "green", "white", "yellow", "red")) +
-#  labs(
- #   x = "Time elapsed (seconds)", 
-  #  y = "Score differential",
-   # fill = "p"
-#  ) +
- # theme_minimal()
+#| echo: false
+#| warning: false
+
+print(db_heatmap)
 ```
 
 The resulting heatmap closely matched the patterns reported in the research paper. The overall probability surface appeared smoother than the MLE heatmap, and the isolated regions with unrealistic probabilities were largely eliminated.
