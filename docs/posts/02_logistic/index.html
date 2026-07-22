@@ -44,10 +44,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-45431c2918bd31147ddb3fa7038bb99f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script src="../../site_libs/quarto-contrib/intersection-observer-polyfill-1.0.0/intersection-observer.js"></script>
-<script src="../../site_libs/quarto-contrib/scrollama-3.2.0/scrollama.min.js"></script>
-<script src="../../site_libs/quarto-contrib/closeread-0.1.0/closeread.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-03ebed3cc6d9517934d904b30f9ec24d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -75,8 +72,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<meta cr-debug-mode="false">
-<meta cr-remove-header-space="false">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -108,10 +103,10 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../site_libs/quarto-contrib/quarto-project/qmd-lab/closeread/closeread.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -152,7 +147,7 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
+    <div class="quarto-title column-body">
       <h1 class="title">Frequentist &amp; Bayesian Logistic Regression Models</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Modeling</div>
@@ -161,7 +156,7 @@ window.Quarto = {
   </div>
     
   
-  <div class="quarto-title-meta column-page">
+  <div class="quarto-title-meta">
 
       <div>
       <div class="quarto-title-meta-heading">Author</div>
@@ -181,12 +176,12 @@ window.Quarto = {
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
@@ -205,8 +200,14 @@ window.Quarto = {
 <p>All logistic regression models were trained using the cleaned 2025 season dataset.</p>
 <section id="without-team-rating" class="level2">
 <h2 class="anchored" data-anchor-id="without-team-rating">Without Team Rating</h2>
-<p>The response variable, <code>home_win</code>, is a binary indicator equal to 1 if the home team won the game and 0 otherwise. The first model used only <code>time_elapsed</code>, <code>lead_diff</code>, and their interaction term. This model assumes that win probability depends entirely on the current game situation.</p>
-<p><span class="math display">\[\ln\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0 + \beta_1(time\_elapsed) + \beta_2(lead\_diff) + \beta_3(time\_elapsed*lead\_diff)\]</span></p>
+<p>The response variable, <code>home_win</code>, is a binary indicator equal to 1 if the home team won the game and 0 otherwise. The first model used only <code>time_elapsed</code>, <code>lead_diff</code>, and their interaction term.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0
+&amp;+ \beta_1(time\_elapsed) + \beta_2(lead\_diff) \\
+&amp;+ \beta_3(time\_elapsed*lead\_diff)
+\end{aligned}
+\]</span></p>
 <p>This model assumes that win probability depends entirely on the current game situation. The score differential captures who is leading, while the interaction term allows the importance of a lead to change as the game progresses. For example, a 10-point lead early in the game is much less valuable than a 10-point lead in the final minutes.</p>
 <p>To visualize the model, predicted probabilities were generated using the <code>ggpredict()</code> function from the <code>ggeffects</code> package and plotted across a range of score differentials.</p>
 <div class="cell">
@@ -223,7 +224,15 @@ window.Quarto = {
 <section id="with-team-rating" class="level2">
 <h2 class="anchored" data-anchor-id="with-team-rating">With Team Rating</h2>
 <p>The second frequentist model incorporated team strength through the <code>rating_diff</code> variable. The team rating data was sourced from TeamRankings.</p>
-<p><span class="math inline">\(home\_win = time\_elapsed + lead\_diff + rating\_diff + time\_elapsed*lead\_diff + time\_elapsed*rating\_diff\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0
+&amp;+ \beta_1(time\_elapsed) + \beta_2(lead\_diff) \\
+&amp;+ \beta_3(time\_elapsed*lead\_diff) \\
+&amp;+ \beta_4(time\_elapsed*lead\_diff) \\
+&amp;+ \beta_5(time\_elapsed*rating\_diff)
+\end{aligned}
+\]</span></p>
 <p>A positive <code>rating_diff</code> indicates that the home team is stronger, while a negative value indicates the away team is stronger.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -244,7 +253,14 @@ window.Quarto = {
 <p>The Bayesian logistic regression model used the same predictor variables as the frequentist model with ratings but estimated the coefficients within a Bayesian framework.</p>
 <p>Rather than producing a single estimate for each coefficient, Bayesian methods estimate a distribution of plausible values. To do this, prior distributions are specified before observing the data and then updated using the observed outcomes. For this project, relatively weak normal priors were used so that the model would learn primarily from the data.</p>
 <p>The Bayesian model was fit using the <code>brms</code> package:</p>
-<p><span class="math inline">\(home\_win = time\_scaled + lead\_scaled + rating\_scaled + time\_scaled*lead\_scaled + time\_scaled*rating\_scaled\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\log\left(\frac{P(\text{home\_win} = 1)}{1 - P(\text{home\_win} = 1)}\right) = \beta_0 &amp;+ \beta_1(\text{time\_scaled}) + \beta_2(\text{lead\_scaled}) \\
+&amp;+ \beta_3(\text{rating\_scaled}) \\
+&amp;+ \beta_4(\text{time\_scaled} \cdot \text{lead\_scaled}) \\
+&amp;+ \beta_5(\text{time\_scaled} \cdot \text{rating\_scaled})
+\end{aligned}
+\]</span></p>
 <p>Because of the size of the dataset, all predictor variables were scaled before training. Even with these adjustments, the model required substantially more computation than the frequentist models and was ultimately trained on a high-performance computing (HPC) cluster.</p>
 <p>Once the model finished training, predicted probabilities and intervals were generated.</p>
 <div class="cell">
@@ -275,8 +291,8 @@ window.Quarto = {
 </div>
 </div>
 <p>Accounting for neutral-site games produced a noticeable change in the regression curves for the frequentist model. In the previous model, the home team was still given an advantage at the start of the game, even when the score differential and rating differential were both equal to zero. After incorporating the neutral-site adjustment, the lead differential of 0 curve begins much closer to a 50% win probability.</p>
-<p>The adjustment also shifted the remaining regression curves downward. This occurs because the model is no longer attributing part of the home team’s expected success to a built-in home-court advantage. As a result, the predictions better reflect games played on neutral courts, such as NCAA Tournament games, where neither team should receive an advantage simply from being designated as the home team.</p>
-<p>Although the starting probabilities changed noticeably, the overall shape of the curves remained similar. As the game progresses, score differential and time elapsed become increasingly important, causing the effect of the pregame adjustment to diminish.</p>
+<p>The adjustment also shifted the remaining regression curves downward. This occurs because the model now accounts for the fact that not all games are played on a true home court. Since rating_diff is defined as the home team’s rating minus the away team’s rating, adding 3.3 points to the home team’s rating for true home games directly increases rating_diff. No adjustment was applied to neutral-site games, resulting in lower pregame win probabilities and predictions that better reflect NCAA Tournament games, where neither team receives a home-court advantage.</p>
+<p>Although the starting probabilities changed noticeably, the overall shape of the curves remained similar. As the game progresses, score differential and time elapsed become increasingly important, causing the influence of the pregame adjustment to diminish.</p>
 <p>The same adjustment was then incorporated into the Bayesian logistic regression model.</p>
 <div class="cell">
 <div class="cell-output-display">

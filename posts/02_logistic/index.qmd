@@ -44,7 +44,13 @@ All logistic regression models were trained using the cleaned 2025 season datase
 ## Without Team Rating
 The response variable, `home_win`, is a binary indicator equal to 1 if the home team won the game and 0 otherwise. The first model used only `time_elapsed`, `lead_diff`, and their interaction term.
 
-$$\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0 + \beta_1(time\_elapsed) + \beta_2(lead\_diff) + \beta_3(time\_elapsed*lead\_diff)$$
+$$
+\begin{aligned}
+\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0
+&+ \beta_1(time\_elapsed) + \beta_2(lead\_diff) \\
+&+ \beta_3(time\_elapsed*lead\_diff)
+\end{aligned}
+$$
 
 This model assumes that win probability depends entirely on the current game situation. The score differential captures who is leading, while the interaction term allows the importance of a lead to change as the game progresses. For example, a 10-point lead early in the game is much less valuable than a 10-point lead in the final minutes.
 
@@ -63,7 +69,15 @@ The resulting curves show how the model's estimate of home-team win probability 
 ## With Team Rating
 The second frequentist model incorporated team strength through the `rating_diff` variable. The team rating data was sourced from TeamRankings.
 
-$$\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0 + \beta_1(time\_elapsed) + \beta_2(lead\_diff) + \beta_3(rating\_diff) + \beta_4(time\_elapsed*lead\_diff) + \beta_5(time\_elapsed*rating\_diff)$$
+$$
+\begin{aligned}
+\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0
+&+ \beta_1(time\_elapsed) + \beta_2(lead\_diff) \\
+&+ \beta_3(time\_elapsed*lead\_diff) \\
+&+ \beta_4(time\_elapsed*lead\_diff) \\
+&+ \beta_5(time\_elapsed*rating\_diff)
+\end{aligned}
+$$
 
 A positive `rating_diff` indicates that the home team is stronger, while a negative value indicates the away team is stronger.
 
@@ -83,13 +97,18 @@ Compared to the previous model, the predicted probabilities become less extreme 
 # Bayesian Logistic Regression Model
 The Bayesian logistic regression model used the same predictor variables as the frequentist model with ratings but estimated the coefficients within a Bayesian framework.
 
-Rather than producing a single estimate for each coefficient, Bayesian methods estimate a distribution of plausible values. To do this, prior distributions are specified before observing the data and then updated using the observed outcomes. For this project, relatively weak normal priors were used so that the model would learn primarily from the data.
+Rather than producing a single estimate for each coefficient, Bayesian methods estimate a distribution of plausible values. To do this, prior distributions are specified before observing the data and then updated using the observed outcomes. For this project, relatively weak normal priors were used so that the model would learn primarily from the data. 
 
 The Bayesian model was fit using the `brms` package:
 
-$home\_win = time\_scaled + lead\_scaled + rating\_scaled + time\_scaled*lead\_scaled + time\_scaled*rating\_scaled$
-
-$$\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0 + \beta_1(time\_scaled) + \beta_2(lead\_scaled) + \beta_3(rating\_scaled) + \beta_4(time\_scaled*lead\_scaled) + \beta_5(time\_scaled*rating\_scaled)$$
+$$
+\begin{aligned}
+\log\left(\frac{P(\text{home\_win} = 1)}{1 - P(\text{home\_win} = 1)}\right) = \beta_0 &+ \beta_1(\text{time\_scaled}) + \beta_2(\text{lead\_scaled}) \\
+&+ \beta_3(\text{rating\_scaled}) \\
+&+ \beta_4(\text{time\_scaled} \cdot \text{lead\_scaled}) \\
+&+ \beta_5(\text{time\_scaled} \cdot \text{rating\_scaled})
+\end{aligned}
+$$
 
 Because of the size of the dataset, all predictor variables were scaled before training. Even with these adjustments, the model required substantially more computation than the frequentist models and was ultimately trained on a high-performance computing (HPC) cluster.
 

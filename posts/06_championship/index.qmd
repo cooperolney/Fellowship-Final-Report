@@ -600,10 +600,32 @@ ggplotly(plotly_duke_uconn_neutral, tooltip = "label") |>
     hoverlabel = list(
       bgcolor = "white",
       bordercolor = "black",
-      font = list(color = "black")
+      font = list(color = "black", size = 12)
     )
   )
 ```
+
+<div class="cr-arrow-01">
+  <svg viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+    <line x1="11" y1="31.5" x2="45" y2="40" stroke="#EE6730" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <defs>
+      <marker id="arrowhead" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto">
+        <polygon points="0 0, 5 2.5, 0 5" fill="#EE6730"/>
+      </marker>
+    </defs>
+  </svg>
+</div>
+
+<div class="cr-arrow-02">
+  <svg viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+    <line x1="62.3" y1="9.6" x2="45" y2="40" stroke="#EE6730" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <defs>
+      <marker id="arrowhead" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto">
+        <polygon points="0 0, 5 2.5, 0 5" fill="#EE6730"/>
+      </marker>
+    </defs>
+  </svg>
+</div>
 
 :::
 
@@ -709,10 +731,32 @@ ggplotly(plotly_mich_uconn_neutral, tooltip = "label") |>
     hoverlabel = list(
       bgcolor = "white",
       bordercolor = "black",
-      font = list(color = "black")
+      font = list(color = "black", size = 12)
     )
   )
 ```
+
+<div class="cr-arrow-03">
+  <svg viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+    <line x1="15.2" y1="58.6" x2="45" y2="40" y2="40" stroke="#EE6730" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <defs>
+      <marker id="arrowhead" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto">
+        <polygon points="0 0, 5 2.5, 0 5" fill="#EE6730"/>
+      </marker>
+    </defs>
+  </svg>
+</div>
+
+<div class="cr-arrow-04">
+  <svg viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+    <line x1="69.6" y1="59.6" x2="45" y2="40" stroke="#EE6730" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <defs>
+      <marker id="arrowhead" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto">
+        <polygon points="0 0, 5 2.5, 0 5" fill="#EE6730"/>
+      </marker>
+    </defs>
+  </svg>
+</div>
 
 :::
 

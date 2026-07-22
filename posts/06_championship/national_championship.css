@@ -284,3 +284,76 @@
   padding: 10px;             
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15); 
 }
+
+
+
+
+
+/* Base style: hidden arrow overlay */
+.cr-arrow-01 {
+  position: absolute;
+  top: 9.25%;
+  left: 38%;
+  width: 60px;
+  height: 60px;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Show only during the specific trigger */
+.cr-section:has(#cr-game-plot-01[style*="0%, 70%"]) .cr-arrow-01 {
+  opacity: 1;
+}
+
+.cr-arrow-02 {
+  position: absolute;
+  top: 17.25%;
+  left: 88.75%;
+  width: 60px;
+  height: 60px;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Show only during the specific trigger */
+.cr-section:has(#cr-game-plot-01[style*="-80%, 5%"]) .cr-arrow-02 {
+  opacity: 1;
+}
+
+.cr-arrow-03 {
+  position: absolute;
+  top: 51.25%;
+  left: 31.25%;
+  width: 60px;
+  height: 60px;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Show only during the specific trigger */
+.cr-section:has(#cr-game-plot-02[style*="40%, -20%"]) .cr-arrow-03 {
+  opacity: 1;
+}
+
+.cr-arrow-04 {
+  position: absolute;
+  top: 26%;
+  left: 73%;
+  width: 60px;
+  height: 60px;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Show only during the specific trigger */
+.cr-section:has(#cr-game-plot-02[style*="-80%, 25%"]) .cr-arrow-04 {
+  opacity: 1;
+}
