@@ -44,7 +44,10 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-03ebed3cc6d9517934d904b30f9ec24d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-45431c2918bd31147ddb3fa7038bb99f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/intersection-observer-polyfill-1.0.0/intersection-observer.js"></script>
+<script src="../../site_libs/quarto-contrib/scrollama-3.2.0/scrollama.min.js"></script>
+<script src="../../site_libs/quarto-contrib/closeread-0.1.0/closeread.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,6 +75,8 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<meta cr-debug-mode="false">
+<meta cr-remove-header-space="false">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -103,10 +108,10 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="../../site_libs/quarto-contrib/quarto-project/qmd-lab/closeread/closeread.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -147,7 +152,7 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
+    <div class="quarto-title column-page">
       <h1 class="title">Frequentist &amp; Bayesian Logistic Regression Models</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">Modeling</div>
@@ -156,7 +161,7 @@ window.Quarto = {
   </div>
     
   
-  <div class="quarto-title-meta">
+  <div class="quarto-title-meta column-page">
 
       <div>
       <div class="quarto-title-meta-heading">Author</div>
@@ -176,12 +181,12 @@ window.Quarto = {
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
 
 
 
@@ -190,7 +195,7 @@ window.Quarto = {
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p><strong>Post 2</strong></p>
-<p>After completing the data collection and cleaning stages of the project, the next step was developing models to estimate in-game win probability. The first models I explored were logistic regression models, inspired by the research paper <em>A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball</em>.</p>
+<p>After completing the data collection and cleaning stages of the project, the next step was developing models to estimate in-game win probability. The first models I explored were logistic regression models, inspired by the research paper <a href="https://www.researchgate.net/publication/394408155_A_Bayesian_Logistic_Regression_Framework_for_In-Game_Win_Probability_Estimation_in_NCAA_Basketball">A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball</a>.</p>
 <p>I began with a frequentist logistic regression model before extending the approach to a Bayesian framework. Both approaches use the same predictor variables and model structure, but they estimate the model parameters differently. Frequentist models estimate a single value for each coefficient using the observed data, while Bayesian models combine the observed data with prior assumptions and estimate a distribution of plausible values. Comparing these approaches provided an opportunity to see how different statistical frameworks affect win probability predictions.</p>
 </section>
 <section id="frequentist-logistic-regression-models" class="level1">
@@ -200,8 +205,8 @@ window.Quarto = {
 <p>All logistic regression models were trained using the cleaned 2025 season dataset.</p>
 <section id="without-team-rating" class="level2">
 <h2 class="anchored" data-anchor-id="without-team-rating">Without Team Rating</h2>
-<p>The first model used only <code>time_elapsed</code>, <code>lead_diff</code>, and their interaction term.</p>
-<p><span class="math inline">\(home\_win = time\_elapsed + lead\_diff + time\_elapsed*lead\_diff\)</span></p>
+<p>The response variable, <code>home_win</code>, is a binary indicator equal to 1 if the home team won the game and 0 otherwise. The first model used only <code>time_elapsed</code>, <code>lead_diff</code>, and their interaction term. This model assumes that win probability depends entirely on the current game situation.</p>
+<p><span class="math display">\[\ln\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0 + \beta_1(time\_elapsed) + \beta_2(lead\_diff) + \beta_3(time\_elapsed*lead\_diff)\]</span></p>
 <p>This model assumes that win probability depends entirely on the current game situation. The score differential captures who is leading, while the interaction term allows the importance of a lead to change as the game progresses. For example, a 10-point lead early in the game is much less valuable than a 10-point lead in the final minutes.</p>
 <p>To visualize the model, predicted probabilities were generated using the <code>ggpredict()</code> function from the <code>ggeffects</code> package and plotted across a range of score differentials.</p>
 <div class="cell">
@@ -290,7 +295,7 @@ window.Quarto = {
 <h1>Conclusion</h1>
 <p>The logistic regression models provided an important first step in modeling in-game win probability. By relating game state variables such as score differential, time elapsed, and team strength to the probability of winning, these models demonstrated how statistical relationships can be used to estimate win probability throughout a game.</p>
 <p>Developing both frequentist and Bayesian versions of the model also provided an opportunity to compare two different statistical approaches. While the models produced similar predictions, the Bayesian approach introduced uncertainty estimates and demonstrated how prior information can be incorporated into a predictive model.</p>
-<p>In the next post, I explore a fundamentally different approach to win probability estimation through the MLE and Dynamic Bayes methods. Rather than fitting a regression model, these methods estimate probabilities directly from historical game outcomes and provide an alternative way to model in-game win probability.</p>
+<p>In the <a href="https://cooperolney.github.io/Fellowship-Final-Report/posts/03_mle_db/">next post</a>, I explore a fundamentally different approach to win probability estimation through the MLE and Dynamic Bayes methods. Rather than fitting a regression model, these methods estimate probabilities directly from historical game outcomes and provide an alternative way to model in-game win probability.</p>
 
 
 </section>

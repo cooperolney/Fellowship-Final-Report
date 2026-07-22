@@ -65,6 +65,8 @@ The first example shows the national championship game between Michigan and UCon
 mich_uconn_mle_plot
 ```
 
+The MLE win probability line changes abruptly throughout the game because the model estimates probabilities directly from historical observations. Since these estimates are based on discrete game states rather than a smooth mathematical function, the resulting probability line appears more jagged and responds quickly to scoring runs and lead changes.
+
 The second example shows Duke vs. Virginia using the frequentist logistic regression model without team ratings.
 
 ```{r}
@@ -74,6 +76,8 @@ The second example shows Duke vs. Virginia using the frequentist logistic regres
 duke_va_log_plot
 ```
 
+Compared to the MLE model, the win probability line is much smoother because it is generated from a fitted mathematical model. The flat sections occur when the game state changes very little, causing the model to produce nearly identical win probability estimates across several possessions.
+
 The final example shows Duke vs. UConn using the Bayesian logistic regression model.
 
 ```{r}
@@ -82,6 +86,8 @@ The final example shows Duke vs. UConn using the Bayesian logistic regression mo
 
 duke_uconn_brm_plot
 ```
+
+The Bayesian logistic regression model also produces a smooth probability line because it relies on a fitted regression equation rather than direct historical frequencies. Similar to the frequentist model, short flat sections appear during periods with little change in score differential, resulting in only minor updates to the predicted win probability.
 
 Although the models differ in how they estimate win probability, the resulting visualizations share a common interpretation. As the score and game situation change, the predicted probability of victory updates continuously. These plots provide a detailed view of momentum shifts and critical turning points that are often lost when looking only at the final score.
 
@@ -106,6 +112,8 @@ The updated MLE visualization for the Michigan versus UConn national championshi
 mich_uconn_mle_neutral_plot
 ```
 
+The win probability line remains relatively jagged because the model still estimates probabilities directly from historical game outcomes. However, the neutral-site adjustment introduces stretches where the probability remains near 50%, reflecting game states where neither team receives an assumed home-court advantage and the score remains tied.
+
 The same adjustment was applied to the Dynamic Bayes method.
 
 ```{r}
@@ -115,7 +123,9 @@ The same adjustment was applied to the Dynamic Bayes method.
 duke_uconn_db_neutral_plot
 ```
 
-After the adjustment, both methods produced win probability curves that began at 50% and evolved solely according to the game state. This provided a more appropriate representation of neutral-site postseason games and improved the interpretability of the visualizations.
+The Dynamic Bayes model begins at exactly a 50% win probability because the game is played at a neutral site and the model does not incorporate team strength. Although the line still reacts to changes in score differential, it appears less jagged than the MLE model because the windowing process smooths estimates by borrowing information from nearby game states.
+
+After the adjustment, both methods produced win probabilities that began at 50% and evolved solely according to the game state. This provided a more appropriate representation of neutral-site postseason games and improved the interpretability of the visualizations.
 
 
 # Conclusion
@@ -123,5 +133,5 @@ This post marks the transition from model development to visualization. The trai
 
 These visualizations reveal aspects of a game that are not captured by the final score alone. Large comebacks, momentum shifts, and critical possessions become visible through changes in predicted win probability, providing a richer view of how games unfold over time.
 
-The next stage of the project focuses on learning the Quarto `Closeread` extension. These win probability plots become a central component of the storytelling process, allowing statistical analysis and narrative explanation to be combined into an interactive presentation of a basketball game.
+The next stage of the project focuses on learning the Quarto `Closeread` extension. In the [next post](https://cooperolney.github.io/Fellowship-Final-Report/posts/05_closeread_test/), these win probability plots become a central component of the storytelling process, allowing statistical analysis and narrative explanation to be combined into an interactive presentation of a basketball game.
 

@@ -514,7 +514,7 @@ The 2026 National Championship game featured Michigan and UConn, two programs th
 
 While the final score determines the national champion, but it does not fully describe how the game unfolded. Throughout a basketball game, the likelihood of each team winning changes as points are scored, possessions are exchanged, and time expires. These changes provide additional insight into the most important moments of a game and how momentum shifted between the competing teams.
 
-This project examines the 2026 National Championship game through the use of **in-game win probability**. A Dynamic Bayesian model is used to estimate each team's probability of winning at every point in the game. The model combines information available before tipoff with game events as they occur, continuously updating the estimated chances of victory. By tracking these probabilities over time, we can better understand how the game developed and identify the moments that had the greatest impact on the eventual outcome.
+This project examines the 2026 National Championship game through the use of **in-game win probability**. A Dynamic Bayesian model is used to estimate each team's probability of winning at every point in the game. The model combines information available before tipoff with game events as they occur, continuously updating the estimated chances of victory. By tracking these probabilities over time, we can better understand how the game developed and identify the moments that had the greatest impact on the eventual outcome. Read more about the Dynamic Bayesian model [here](https://cooperolney.github.io/Fellowship-Final-Report/posts/03_mle_db/).
 
 :::
 
@@ -528,7 +528,7 @@ This project examines the 2026 National Championship game through the use of **i
 
 [The Elite Eight determines which teams will earn a trip to the Final Four. Both Michigan and UConn entered this round just one victory away from college basketball's biggest stage. While Michigan advanced comfortably, UConn's matchup with Duke produced one of the most dramatic games of the tournament.]{.cr-bubble} @cr-bracket-elite
 
-[Before continuing to the Final Four, let's take a closer look at UConn's Elite Eight matchup against Duke. Although UConn ultimately advanced, the game featured lead changes that dramatically changed each team's chances of winning. Using the win probability model, we can see how those pivotal moments unfolded throughout the game.]{.cr-bubble} [@cr-bracket-elite]{pan-to="25%,50%" scale-by="2.5"}
+[Before continuing to the Final Four, let's take a closer look at UConn's Elite Eight matchup against Duke. Although UConn ultimately advanced, the game featured lead changes that dramatically changed each team's chances of winning. Using the Dynamic Bayes win probability model, we can see how those pivotal moments unfolded throughout the game.]{.cr-bubble} [@cr-bracket-elite]{pan-to="25%,50%" scale-by="2.5"}
 
 :::{#cr-bracket-first}
 ```{r}
@@ -582,11 +582,11 @@ The following example examines the 2026 Elite Eight matchup between Duke and UCo
 
 :::{.cr-section}
 
-[This Elite Eight matchup featured the Duke Blue Devils and the UConn Huskies, the No. 1 and No. 2 seeds from the East Region, respectively. Since the game was played at a neutral site and the model does not incorporate team strength, both teams begin with an equal 50% chance of winning. The win probability curve below tracks how Duke's chances evolved throughout the game based solely on the time and score.]{.cr-bubble} @cr-game-plot-01
+[This Elite Eight matchup featured the Duke Blue Devils and the UConn Huskies, the No. 1 and No. 2 seeds from the East Region, respectively. Since the game was played at a neutral site and the model does not incorporate team strength, both teams begin with an equal 50% chance of winning. The predicted win probability below tracks how Duke's chances evolved throughout the game based solely on the time and score.]{.cr-bubble} @cr-game-plot-01
 
 [For much of the first half, Duke controlled the game. Efficient scoring, strong defensive possessions, and a growing lead pushed the Blue Devils' win probability steadily upward. When Duke extended its advantage to 19 points late in the half, the model estimated a 97.9% chance of victory, suggesting that a UConn comeback was highly unlikely based on historical game outcomes.]{.cr-bubble} [@cr-game-plot-01]{pan-to="0%,70%" scale-by="2.5"}
 
-[The second half told a different story. UConn gradually erased Duke's lead, causing the win probability curve to decline as time expired. Even after the Huskies' rally, Duke still held an estimated 85.3% chance of winning on the game's final possession. However, basketball outcomes are never certain. Freshman Braylon Mullins connected on a 35-foot buzzer-beating three-pointer, instantly shifting the game's result, and the model's final prediction from a likely Duke victory to a UConn win.]{.cr-bubble} [@cr-game-plot-01]{pan-to="-100%,25%" scale-by="2"}
+[The second half told a different story. UConn gradually erased Duke's lead, causing the predicted win probability to decline as time expired. Even after the Huskies' rally, Duke still held an estimated 85.3% chance of winning on the game's final possession. However, basketball outcomes are never certain. Freshman Braylon Mullins connected on a 35-foot buzzer-beating three-pointer, instantly shifting the game's result, and the model's final prediction from a likely Duke victory to a UConn win.]{.cr-bubble} [@cr-game-plot-01]{pan-to="-80%,5%" scale-by="1.5"}
 
 ![UConn players celebrating after winning the game](uconn.jpg){.cr-bubble} @cr-game-plot-01
 
@@ -612,7 +612,29 @@ ggplotly(plotly_duke_uconn_neutral, tooltip = "label") |>
 ```{r}
 #| echo: false
 #| warning: false
-plot_duke_uconn_neutral + theme(labs(title=NULL, x=NULL, y=NULL))
+minimap_duke_uconn <- plot_duke_uconn_neutral +
+  annotate("rect",
+    xmin = 300, xmax = 1900, ymin = 0.5, ymax = 1,
+    fill = "#EE6730", alpha = 0.5
+  )
+
+minimap_duke_uconn
+```
+
+:::
+
+:::{.cr-minimap-float-second}
+
+```{r}
+#| echo: false
+#| warning: false
+minimap_duke_uconn_second <- plot_duke_uconn_neutral +
+  annotate("rect",
+    xmin = 1350, xmax = 2400, ymin = 0, ymax = 1,
+    fill = "#EE6730", alpha = 0.5
+  )
+
+minimap_duke_uconn_second
 ```
 
 :::
@@ -659,7 +681,9 @@ bracket_championship
 ## Michigan vs UConn - 2026 National Championship
 
 :::{.case-study-intro}
-The 2026 NCAA National Championship represented the culmination of one of the most competitive tournaments in sports. After winning five games of March Madness, Michigan and UConn emerged as the final two teams standing. While the final score ultimately determined the national champion, the win probability curve provides a more detailed view of how the game unfolded, highlighting the moments that shifted momentum and the key stretches that defined the outcome.
+The 2026 NCAA National Championship represented the culmination of one of the most competitive tournaments in sports. After winning five games of March Madness, Michigan and UConn emerged as the final two teams standing. While the final score ultimately determined the national champion, the predicted win probability provides a more detailed view of how the game unfolded, highlighting the moments that shifted momentum and the key stretches that defined the outcome.
+
+To estimate in-game win probability, the same Dynamic Bayesian model was used. Since the National Championship is also played at a neutral site, neither team receives a home-court advantage and the model begins with both teams assigned a 50% chance of victory. From that point forward, changes in win probability are driven entirely by events that occur during the game.
 :::
 
 :::{.cr-section}
@@ -697,7 +721,46 @@ ggplotly(plotly_mich_uconn_neutral, tooltip = "label") |>
 ```{r}
 #| echo: false
 #| warning: false
-plot_mich_uconn_neutral + theme(labs(title=NULL, x=NULL, y=NULL))
+minimap_mich_uconn <- plot_mich_uconn_neutral +
+  annotate("rect",
+    xmin = 0, xmax = 1350, ymin = 0, ymax = 0.75,
+    fill = "#EE6730", alpha = 0.5
+  )
+
+minimap_mich_uconn
+
+```
+
+:::
+
+:::{.cr-minimap-float-02-second}
+
+```{r}
+#| echo: false
+#| warning: false
+minimap_mich_uconn_second <- plot_mich_uconn_neutral +
+  annotate("rect",
+    xmin = 1300, xmax = 2400, ymin = 0.2, ymax = 1,
+    fill = "#EE6730", alpha = 0.5
+  )
+
+minimap_mich_uconn_second
+```
+
+:::
+
+:::{.cr-minimap-float-02-third}
+
+```{r}
+#| echo: false
+#| warning: false
+minimap_mich_uconn_third <- plot_mich_uconn_neutral +
+  annotate("rect",
+    xmin = 1450, xmax = 2400, ymin = 0.33, ymax = 1,
+    fill = "#EE6730", alpha = 0.5
+  )
+
+minimap_mich_uconn_third
 ```
 
 :::
@@ -713,7 +776,7 @@ In-game win probability provides a deeper perspective on basketball games than t
 
 Using a Dynamic Bayesian model, win probability estimates are continuously updated throughout a game as new information becomes available. By incorporating factors such as score differential, time remaining, and possession, the model captures how each team's chances of winning evolve over time.
 
-The games examined in this case study highlight the value of this approach. UConn's comeback against Duke demonstrated that even highly unlikely outcomes can occur, while Michigan's championship victory showed how a team can steadily build and maintain control. In both cases, the win probability curve provided insight that would be difficult to capture from the final score alone.
+The games examined in this case study highlight the value of this approach. UConn's comeback against Duke demonstrated that even highly unlikely outcomes can occur, while Michigan's championship victory showed how a team can steadily build and maintain control. In both cases, the predicted win probability provided insight that would be difficult to capture from the final score alone.
 
 Beyond this tournament, win probability models can be used to identify pivotal moments, evaluate game dynamics, and communicate complex information in an intuitive way. As a result, they have become an increasingly valuable tool in modern sports analytics.
 

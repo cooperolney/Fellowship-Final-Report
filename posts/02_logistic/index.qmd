@@ -30,7 +30,7 @@ brm_neutral <- readRDS(here("data", "brm_neutral.rds"))
 
 **Post 2**
 
-After completing the data collection and cleaning stages of the project, the next step was developing models to estimate in-game win probability. The first models I explored were logistic regression models, inspired by the research paper *A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball*.
+After completing the data collection and cleaning stages of the project, the next step was developing models to estimate in-game win probability. The first models I explored were logistic regression models, inspired by the research paper [A Bayesian Logistic Regression Framework for In-Game Win Probability Estimation in NCAA Basketball](https://www.researchgate.net/publication/394408155_A_Bayesian_Logistic_Regression_Framework_for_In-Game_Win_Probability_Estimation_in_NCAA_Basketball).
 
 I began with a frequentist logistic regression model before extending the approach to a Bayesian framework. Both approaches use the same predictor variables and model structure, but they estimate the model parameters differently. Frequentist models estimate a single value for each coefficient using the observed data, while Bayesian models combine the observed data with prior assumptions and estimate a distribution of plausible values. Comparing these approaches provided an opportunity to see how different statistical frameworks affect win probability predictions.
 
@@ -42,9 +42,9 @@ Rather than directly calculating win probabilities from historical outcomes, log
 All logistic regression models were trained using the cleaned 2025 season dataset.
 
 ## Without Team Rating
-The first model used only `time_elapsed`, `lead_diff`, and their interaction term.
+The response variable, `home_win`, is a binary indicator equal to 1 if the home team won the game and 0 otherwise. The first model used only `time_elapsed`, `lead_diff`, and their interaction term.
 
-$home\_win = time\_elapsed + lead\_diff + time\_elapsed*lead\_diff$
+$$\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0 + \beta_1(time\_elapsed) + \beta_2(lead\_diff) + \beta_3(time\_elapsed*lead\_diff)$$
 
 This model assumes that win probability depends entirely on the current game situation. The score differential captures who is leading, while the interaction term allows the importance of a lead to change as the game progresses. For example, a 10-point lead early in the game is much less valuable than a 10-point lead in the final minutes.
 
@@ -63,7 +63,7 @@ The resulting curves show how the model's estimate of home-team win probability 
 ## With Team Rating
 The second frequentist model incorporated team strength through the `rating_diff` variable. The team rating data was sourced from TeamRankings.
 
-$home\_win = time\_elapsed + lead\_diff + rating\_diff + time\_elapsed*lead\_diff + time\_elapsed*rating\_diff$
+$$\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0 + \beta_1(time\_elapsed) + \beta_2(lead\_diff) + \beta_3(rating\_diff) + \beta_4(time\_elapsed*lead\_diff) + \beta_5(time\_elapsed*rating\_diff)$$
 
 A positive `rating_diff` indicates that the home team is stronger, while a negative value indicates the away team is stronger.
 
@@ -88,6 +88,8 @@ Rather than producing a single estimate for each coefficient, Bayesian methods e
 The Bayesian model was fit using the `brms` package:
 
 $home\_win = time\_scaled + lead\_scaled + rating\_scaled + time\_scaled*lead\_scaled + time\_scaled*rating\_scaled$
+
+$$\log\left(\frac{P(home\_win = 1)}{1 - P(home\_win = 1)}\right) = \beta_0 + \beta_1(time\_scaled) + \beta_2(lead\_scaled) + \beta_3(rating\_scaled) + \beta_4(time\_scaled*lead\_scaled) + \beta_5(time\_scaled*rating\_scaled)$$
 
 Because of the size of the dataset, all predictor variables were scaled before training. Even with these adjustments, the model required substantially more computation than the frequentist models and was ultimately trained on a high-performance computing (HPC) cluster.
 
@@ -122,9 +124,9 @@ log_neutral
 
 Accounting for neutral-site games produced a noticeable change in the regression curves for the frequentist model. In the previous model, the home team was still given an advantage at the start of the game, even when the score differential and rating differential were both equal to zero. After incorporating the neutral-site adjustment, the lead differential of 0 curve begins much closer to a 50% win probability.
 
-The adjustment also shifted the remaining regression curves downward. This occurs because the model is no longer attributing part of the home team's expected success to a built-in home-court advantage. As a result, the predictions better reflect games played on neutral courts, such as NCAA Tournament games, where neither team should receive an advantage simply from being designated as the home team.
+The adjustment also shifted the remaining regression curves downward. This occurs because the model now accounts for the fact that not all games are played on a true home court. Since rating_diff is defined as the home team's rating minus the away team's rating, adding 3.3 points to the home team's rating for true home games directly increases rating_diff. No adjustment was applied to neutral-site games, resulting in lower pregame win probabilities and predictions that better reflect NCAA Tournament games, where neither team receives a home-court advantage.
 
-Although the starting probabilities changed noticeably, the overall shape of the curves remained similar. As the game progresses, score differential and time elapsed become increasingly important, causing the effect of the pregame adjustment to diminish.
+Although the starting probabilities changed noticeably, the overall shape of the curves remained similar. As the game progresses, score differential and time elapsed become increasingly important, causing the influence of the pregame adjustment to diminish.
 
 The same adjustment was then incorporated into the Bayesian logistic regression model.
 
@@ -146,6 +148,6 @@ The logistic regression models provided an important first step in modeling in-g
 
 Developing both frequentist and Bayesian versions of the model also provided an opportunity to compare two different statistical approaches. While the models produced similar predictions, the Bayesian approach introduced uncertainty estimates and demonstrated how prior information can be incorporated into a predictive model.
 
-In the next post, I explore a fundamentally different approach to win probability estimation through the MLE and Dynamic Bayes methods. Rather than fitting a regression model, these methods estimate probabilities directly from historical game outcomes and provide an alternative way to model in-game win probability.
+In the [next post](https://cooperolney.github.io/Fellowship-Final-Report/posts/03_mle_db/), I explore a fundamentally different approach to win probability estimation through the MLE and Dynamic Bayes methods. Rather than fitting a regression model, these methods estimate probabilities directly from historical game outcomes and provide an alternative way to model in-game win probability.
 
 

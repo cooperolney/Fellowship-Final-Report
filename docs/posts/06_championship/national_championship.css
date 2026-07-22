@@ -40,7 +40,35 @@
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.cr-section:has(#cr-game-plot-01[style*="transform"]) .cr-minimap-float {
+/* Minimap first */
+.cr-section:has(#cr-game-plot-01[style*="0%, 70%"]) .cr-minimap-float {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 1. Base style for the floating container (Hidden by default) */
+.cr-minimap-float-second {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 333px;
+  height: 240px;
+  background-color: white;
+  border: 2px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  pointer-events: none;
+
+  /* Start hidden */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Minimap second */
+.cr-section:has(#cr-game-plot-01[style*="-80%, 5%"]) .cr-minimap-float-second {
   opacity: 1;
   transform: translateY(0);
 }
@@ -54,6 +82,19 @@
   height: 100% !important;
   object-fit: contain;
 }
+
+/* Same scaling rule, applied to the second minimap */
+.cr-minimap-float-second img,
+.cr-minimap-float-second decimal,
+.cr-minimap-float-second svg,
+.cr-minimap-float-second .cell-output-display {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+
+
 
 /* Steps For Michigan vs. UConn Minimap */
 
@@ -71,27 +112,105 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   z-index: 9999;
   pointer-events: none;
-  
+
   /* Start hidden */
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.cr-section:has(#cr-game-plot-02[style*="transform"]) .cr-minimap-float-02 {
+/* Minimap first */
+.cr-section:has(#cr-game-plot-02[style*="40%, -20%"]) .cr-minimap-float-02 {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* 3. Allows the R ggplot output to scale and fill the mini-map */
-.cr-minimap-float-02 img, 
-.cr-minimap-float-02 decimal, 
+/* 1. Base style for the floating container (Hidden by default) */
+.cr-minimap-float-02-second {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 333px;
+  height: 240px;
+  background-color: white;
+  border: 2px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  pointer-events: none;
+
+  /* Start hidden */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Minimap second */
+.cr-section:has(#cr-game-plot-02[style*="-80%, 25%"]) .cr-minimap-float-02-second {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 1. Base style for the floating container (Hidden by default) */
+.cr-minimap-float-02-third {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 333px;
+  height: 240px;
+  background-color: white;
+  border: 2px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  pointer-events: none;
+
+  /* Start hidden */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Minimap third */
+.cr-section:has(#cr-game-plot-02[style*="-100%, 50%"]) .cr-minimap-float-02-third {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 3. Allows the R ggplot output to scale and fill the mini-map (first minimap) */
+.cr-minimap-float-02 img,
+.cr-minimap-float-02 decimal,
 .cr-minimap-float-02 svg,
 .cr-minimap-float-02 .cell-output-display {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain;
 }
+
+/* Same scaling rule, applied to the second minimap */
+.cr-minimap-float-02-second img,
+.cr-minimap-float-02-second decimal,
+.cr-minimap-float-02-second svg,
+.cr-minimap-float-02-second .cell-output-display {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+/* Same scaling rule, applied to the third minimap */
+.cr-minimap-float-02-third img,
+.cr-minimap-float-02-third decimal,
+.cr-minimap-float-02-third svg,
+.cr-minimap-float-02-third .cell-output-display {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+
+
 
 /* Apply a border and rounded corners to the main plots */
 #cr-game-plot-01 {

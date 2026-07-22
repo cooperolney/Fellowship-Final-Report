@@ -21,7 +21,7 @@ db_heatmap <- readRDS(here("data", "db_heatmap_plot.rds"))
 
 **Post 3**
 
-While developing the Frequentist and Bayesian logistic regression models, I also explored a different approach based on the methods presented in *Bayesian Estimation of In-Game Home Team Win Probability for College Basketball.* Unlike logistic regression, which estimates win probability through a statistical model fitted to predictor variables, these methods estimate win probability directly from historical game outcomes.
+While developing the Frequentist and Bayesian logistic regression models, I also explored a different approach based on the methods presented in [Bayesian Estimation of In-Game Home Team Win Probability for College Basketball](https://arxiv.org/pdf/2204.11777). Unlike logistic regression, which estimates win probability through a statistical model fitted to predictor variables, these methods estimate win probability directly from historical game outcomes.
 
 The two approaches examined were the **Maximum Likelihood Estimation (MLE)** method and the **Dynamic Bayes** method. Both methods use historical combinations of game time and score differential to estimate the probability that the home team will ultimately win. One of the goals of this stage of the project was to determine whether these methods would produce results similar to those reported in the research paper when trained using only a single season of NCAA men's basketball data.
 
@@ -113,5 +113,5 @@ This post concludes the model development stage of the project. Across the logis
 
 Although each method approached the problem differently, they all relied on the same underlying goal: translating the current game state into an estimate of the home team's probability of winning. Comparing these methods provided insight into both traditional statistical modeling approaches and methods based directly on historical game outcomes.
 
-With the modeling stage complete, the next step is to focus on visualization. The following post demonstrates how these model outputs can be transformed into predicted win probability plots, allowing individual games to be analyzed through the changing probability of a home-team victory as the game unfolds.
+With the modeling stage complete, the next step is to focus on visualization. The [following post](https://cooperolney.github.io/Fellowship-Final-Report/posts/04_prob_plots/) demonstrates how these model outputs can be transformed into predicted win probability plots, allowing individual games to be analyzed through the changing probability of a home-team victory as the game unfolds.
 

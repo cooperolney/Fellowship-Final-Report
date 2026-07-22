@@ -190,6 +190,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p>The MLE win probability line changes abruptly throughout the game because the model estimates probabilities directly from historical observations. Since these estimates are based on discrete game states rather than a smooth mathematical function, the resulting probability line appears more jagged and responds quickly to scoring runs and lead changes.</p>
 <p>The second example shows Duke vs.&nbsp;Virginia using the frequentist logistic regression model without team ratings.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -200,6 +201,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p>Compared to the MLE model, the win probability line is much smoother because it is generated from a fitted mathematical model. The flat sections occur when the game state changes very little, causing the model to produce nearly identical win probability estimates across several possessions.</p>
 <p>The final example shows Duke vs.&nbsp;UConn using the Bayesian logistic regression model.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -210,6 +212,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p>The Bayesian logistic regression model also produces a smooth probability line because it relies on a fitted regression equation rather than direct historical frequencies. Similar to the frequentist model, short flat sections appear during periods with little change in score differential, resulting in only minor updates to the predicted win probability.</p>
 <p>Although the models differ in how they estimate win probability, the resulting visualizations share a common interpretation. As the score and game situation change, the predicted probability of victory updates continuously. These plots provide a detailed view of momentum shifts and critical turning points that are often lost when looking only at the final score.</p>
 </section>
 <section id="adjusting-mle-and-dynamic-bayes-for-neutral-site-games" class="level1">
@@ -229,6 +232,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p>The win probability line remains relatively jagged because the model still estimates probabilities directly from historical game outcomes. However, the neutral-site adjustment introduces stretches where the probability remains near 50%, reflecting game states where neither team receives an assumed home-court advantage and the score remains tied.</p>
 <p>The same adjustment was applied to the Dynamic Bayes method.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -239,13 +243,14 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
-<p>After the adjustment, both methods produced win probability curves that began at 50% and evolved solely according to the game state. This provided a more appropriate representation of neutral-site postseason games and improved the interpretability of the visualizations.</p>
+<p>The Dynamic Bayes model begins at exactly a 50% win probability because the game is played at a neutral site and the model does not incorporate team strength. Although the line still reacts to changes in score differential, it appears less jagged than the MLE model because the windowing process smooths estimates by borrowing information from nearby game states.</p>
+<p>After the adjustment, both methods produced win probabilities that began at 50% and evolved solely according to the game state. This provided a more appropriate representation of neutral-site postseason games and improved the interpretability of the visualizations.</p>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
 <p>This post marks the transition from model development to visualization. The trained models were applied to individual games, transforming statistical predictions into win probability plots that illustrate how a team’s chances of winning change throughout a game.</p>
 <p>These visualizations reveal aspects of a game that are not captured by the final score alone. Large comebacks, momentum shifts, and critical possessions become visible through changes in predicted win probability, providing a richer view of how games unfold over time.</p>
-<p>The next stage of the project focuses on learning the Quarto <code>Closeread</code> extension. These win probability plots become a central component of the storytelling process, allowing statistical analysis and narrative explanation to be combined into an interactive presentation of a basketball game.</p>
+<p>The next stage of the project focuses on learning the Quarto <code>Closeread</code> extension. In the <a href="https://cooperolney.github.io/Fellowship-Final-Report/posts/05_closeread_test/">next post</a>, these win probability plots become a central component of the storytelling process, allowing statistical analysis and narrative explanation to be combined into an interactive presentation of a basketball game.</p>
 
 
 </section>
