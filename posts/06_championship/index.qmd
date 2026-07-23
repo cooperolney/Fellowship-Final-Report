@@ -638,7 +638,8 @@ minimap_duke_uconn <- plot_duke_uconn_neutral +
   annotate("rect",
     xmin = 300, xmax = 1900, ymin = 0.5, ymax = 1,
     fill = "#EE6730", alpha = 0.5
-  )
+  ) +
+  theme(axis.text = element_text(size = 16))
 
 minimap_duke_uconn
 ```
@@ -654,7 +655,8 @@ minimap_duke_uconn_second <- plot_duke_uconn_neutral +
   annotate("rect",
     xmin = 1350, xmax = 2400, ymin = 0, ymax = 1,
     fill = "#EE6730", alpha = 0.5
-  )
+  ) +
+  theme(axis.text = element_text(size = 16))
 
 minimap_duke_uconn_second
 ```
@@ -769,7 +771,8 @@ minimap_mich_uconn <- plot_mich_uconn_neutral +
   annotate("rect",
     xmin = 0, xmax = 1350, ymin = 0, ymax = 0.75,
     fill = "#EE6730", alpha = 0.5
-  )
+  ) +
+  theme(axis.text = element_text(size = 16))
 
 minimap_mich_uconn
 
@@ -786,7 +789,8 @@ minimap_mich_uconn_second <- plot_mich_uconn_neutral +
   annotate("rect",
     xmin = 1300, xmax = 2400, ymin = 0.2, ymax = 1,
     fill = "#EE6730", alpha = 0.5
-  )
+  ) +
+  theme(axis.text = element_text(size = 16))
 
 minimap_mich_uconn_second
 ```
@@ -802,7 +806,8 @@ minimap_mich_uconn_third <- plot_mich_uconn_neutral +
   annotate("rect",
     xmin = 1450, xmax = 2400, ymin = 0.33, ymax = 1,
     fill = "#EE6730", alpha = 0.5
-  )
+  ) +
+  theme(axis.text = element_text(size = 16))
 
 minimap_mich_uconn_third
 ```
