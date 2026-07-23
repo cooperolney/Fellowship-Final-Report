@@ -13,6 +13,8 @@ about:
 ---
 
 <!-- About this blog -->
-This blog contains posts created for the 2026 St. Lawrence Fellowship. The goal of this fellowship was to visualize in-game win probability in college basketball through data storytelling 
+This blog contains posts created for the 2026 St. Lawrence Fellowship.
+
+The primary goal of this project was to investigate how in-game win probability can be estimated and visualized throughout NCAA men's basketball games to support data-driven storytelling. By combining statistical modeling with interactive visualizations, the project demonstrates how college basketball data can be transformed into engaging and informative narratives.
 
 
